@@ -126,22 +126,22 @@ export default function Header() {
 
       <AnimatePresence>
         {showLogoutModal && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm" onClick={() => setShowLogoutModal(false)}>
-            <motion.div initial={{ opacity: 0, scale: 0.92, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, y: 10 }} transition={{ type: "spring", stiffness: 200, damping: 25 }} className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]" onClick={(e) => e.stopPropagation()}>
-              <div className="p-6">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-red-50">
-                  <SignIn size={20} weight="bold" className="text-red-500" />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm" onClick={() => setShowLogoutModal(false)}>
+            <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.92 }} transition={{ type: "spring", stiffness: 250, damping: 22 }} className="w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-white shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)]" onClick={(e) => e.stopPropagation()}>
+              <div className="flex flex-col items-center px-8 pb-4 pt-10 text-center">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-50 to-red-100 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+                  <SignIn size={26} weight="bold" className="text-red-500" />
                 </div>
-                <h2 className="mb-1 text-lg font-extrabold tracking-tight text-primary">Cerrar sesión</h2>
-                <p className="text-sm leading-relaxed text-gray-500">¿Estás seguro de que deseas salir del sistema?</p>
+                <h2 className="mb-1.5 text-lg font-extrabold tracking-tight text-primary">Cerrar sesión</h2>
+                <p className="max-w-[260px] text-sm leading-relaxed text-gray-500">¿Estás seguro de que deseas salir del sistema?</p>
               </div>
-              <div className="flex gap-2 border-t border-gray-100 px-6 py-4">
+              <div className="flex gap-2.5 border-t border-gray-100 px-8 py-4">
                 <button onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 cursor-pointer rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-gray-50 active:scale-[0.98]">
+                  className="flex-1 cursor-pointer rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-bold text-gray-600 shadow-sm transition-all hover:bg-gray-50 active:scale-[0.97]">
                   Cancelar
                 </button>
                 <button onClick={handleLogoutConfirm}
-                  className="flex-1 cursor-pointer rounded-xl bg-red-500 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-red-600 active:scale-[0.98]">
+                  className="flex-1 cursor-pointer rounded-xl bg-gradient-to-br from-red-500 to-red-600 px-4 py-2.5 text-sm font-bold text-white shadow-[0_4px_12px_rgba(239,68,68,0.35)] transition-all hover:shadow-[0_6px_20px_rgba(239,68,68,0.45)] active:scale-[0.97]">
                   Salir
                 </button>
               </div>
