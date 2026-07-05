@@ -26,14 +26,17 @@ function UploadInner() {
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   const cargar = useCallback(async () => {
+    loading(true, "Cargando...");
     const { data } = await supabase
       .from("imagenes")
       .select("url,descripcion,destino")
       .order("id", { ascending: false });
-    if (!data) return;
-    setGaleria(data.filter((i) => i.destino !== "carrusel"));
-    setCarrusel(data.filter((i) => i.destino === "carrusel"));
-  }, [supabase]);
+    if (data) {
+      setGaleria(data.filter((i) => i.destino !== "carrusel"));
+      setCarrusel(data.filter((i) => i.destino === "carrusel"));
+    }
+    loading(false);
+  }, [supabase, loading]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -60,10 +63,10 @@ function UploadInner() {
     const destino = fd.get("destino") as string;
     if (!file || !destino) return;
 
-    setSending(true);
+    loading(true, "Publicando imagen...");
     const res = await fetch("/api/subir-imagen", { method: "POST", body: fd });
     const data = await res.json();
-    setSending(false);
+    loading(false);
 
     if (!res.ok) {
       toast("error", "Error", data.error || "Error al subir la imagen");

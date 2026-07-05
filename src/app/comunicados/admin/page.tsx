@@ -49,19 +49,20 @@ function ComAdminInner() {
 
   useEffect(() => {
     async function init() {
+      loading(true, "Cargando comunicados...");
       const { data: { user: u } } = await supabase.auth.getUser();
-      if (!u) { router.push("/login"); return; }
+      if (!u) { loading(false); router.push("/login"); return; }
       const { data: perfil } = await supabase.from("usuarios_perfil").select("rol, nombre_completo, usuario").eq("user_id", u.id).single();
       if (!perfil || !["admin", "docente_guia_admin"].includes((perfil as { rol: string }).rol)) {
-        router.push("/panel-ausencias");
-        return;
+        loading(false); router.push("/panel-ausencias"); return;
       }
       setUser({ id: u.id, name: (perfil as { nombre_completo: string; usuario: string }).nombre_completo || (perfil as { usuario: string }).usuario || u.email || "Admin" });
       const { data } = await supabase.from("comunicados").select("*").order("creado_en", { ascending: false });
       if (data) setComunicados(data as Comunicado[]);
+      loading(false);
     }
     init();
-  }, [router, supabase]);
+  }, [router, supabase, loading]);
 
   const refetch = useCallback(async () => {
     const { data } = await supabase.from("comunicados").select("*").order("creado_en", { ascending: false });
