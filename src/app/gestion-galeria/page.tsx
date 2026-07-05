@@ -37,7 +37,7 @@ function UploadInner() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) { router.push("/login?redirect=/subir-imagen"); return; }
+      if (!user) { router.push("/login?redirect=/gestion-galeria"); return; }
       supabase
         .from("usuarios_perfil")
         .select("rol")
@@ -100,8 +100,8 @@ function UploadInner() {
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
           <ImageSquare size={22} weight="fill" className="text-primary" />
         </div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-primary md:text-3xl">Panel de Gestion de Imagenes</h1>
-        <p className="text-sm text-gray-500">Carga imagenes para la galeria o el carrusel de inicio.</p>
+        <h1 className="text-2xl font-extrabold tracking-tight text-primary md:text-3xl">Panel de Administraci&oacute;n de Galer&iacute;a</h1>
+        <p className="text-sm text-gray-500">Gestiona las im&aacute;genes de la galer&iacute;a y el carrusel de inicio.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -169,7 +169,7 @@ function UploadInner() {
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
             <ImageSquare size={14} weight="bold" className="text-primary" />
           </div>
-          <h2 className="text-sm font-extrabold tracking-tight text-primary">Imagenes Cargadas</h2>
+          <h2 className="text-sm font-extrabold tracking-tight text-primary">Contenido Visual</h2>
         </div>
 
         <div className="mb-4 flex gap-2">
@@ -209,7 +209,7 @@ function UploadInner() {
                   <img src={img.url} alt={img.descripcion} className="h-full w-full object-cover" loading="lazy" />
                 </button>
                 <button onClick={() => borrar(img)}
-                  className="absolute right-1.5 top-1.5 hidden cursor-pointer rounded-md bg-red-600/90 px-2 py-1 text-xs font-bold text-white transition-all hover:bg-red-700 group-hover:block">
+                  className="absolute right-1.5 top-1.5 cursor-pointer rounded-md bg-red-600/90 px-2 py-1 text-xs font-bold text-white transition-all hover:bg-red-700 sm:opacity-0 sm:group-hover:opacity-100">
                   <TrashSimple size={12} weight="bold" />
                 </button>
               </div>

@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 const authOnlyPaths = ["/panel-ausencias"];
-const adminPaths = ["/comunicados/admin", "/subir-imagen"];
+const adminPaths = ["/comunicados/admin", "/gestion-galeria"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

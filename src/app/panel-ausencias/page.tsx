@@ -208,11 +208,11 @@ function DocentesInner() {
               Ir a Gestion de Comunicados
             </button>
             <button
-              onClick={() => router.push("/subir-imagen")}
+              onClick={() => router.push("/gestion-galeria")}
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97]"
             >
               <ImageIcon size={14} weight="bold" />
-              Subir Imagen a Galeria
+              Gesti&oacute;n de Galer&iacute;a
             </button>
           </div>
         </motion.div>
