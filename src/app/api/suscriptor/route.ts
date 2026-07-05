@@ -13,6 +13,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Teléfono requerido" }, { status: 400 });
   }
 
+  const telValido = /^\+506\d{8}$/.test(telefono);
+  if (!telValido) {
+    return NextResponse.json({ error: "Teléfono inválido. Debe ser +506 seguido de 8 dígitos" }, { status: 400 });
+  }
+
   if (accion === "suscribir") {
     if (!nombre) {
       return NextResponse.json({ error: "Nombre requerido" }, { status: 400 });

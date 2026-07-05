@@ -11,12 +11,21 @@ export default function ModalSuscripcion() {
   const [status, setStatus] = useState<"idle" | "ok" | "error">("idle");
   const [msg, setMsg] = useState("");
 
+  function validarTelefono(t: string) {
+    const limpio = t.replace(/[\s\-\(\)]/g, "");
+    if (/^\+506\d{8}$/.test(limpio)) return limpio;
+    if (/^\d{8}$/.test(limpio)) return "+506" + limpio;
+    return null;
+  }
+
   async function handleSubscribe() {
+    const tel = validarTelefono(telefono);
+    if (!tel) { setStatus("error"); setMsg("Teléfono inválido. Debe ser un número de Costa Rica (+506 8888 8888)"); return; }
     setStatus("idle");
     const res = await fetch("/api/suscriptor", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accion: "suscribir", telefono, nombre }),
+      body: JSON.stringify({ accion: "suscribir", telefono: tel, nombre }),
     });
     const json = await res.json();
     if (json.ok) {
@@ -29,11 +38,13 @@ export default function ModalSuscripcion() {
   }
 
   async function handleUnsubscribe() {
+    const tel = validarTelefono(telefono);
+    if (!tel) { setStatus("error"); setMsg("Teléfono inválido. Debe ser un número de Costa Rica (+506 8888 8888)"); return; }
     setStatus("idle");
     const res = await fetch("/api/suscriptor", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ accion: "baja", telefono }),
+      body: JSON.stringify({ accion: "baja", telefono: tel }),
     });
     const json = await res.json();
     if (json.ok) {
