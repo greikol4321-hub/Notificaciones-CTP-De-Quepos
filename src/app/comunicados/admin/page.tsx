@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Megaphone, Note, FilePdf, CaretDown, PencilSimple,
+  Megaphone, Note, FilePdf, PencilSimple,
   TrashSimple, FloppyDisk, X, Calendar, User, MagnifyingGlass,
 } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";

@@ -25,7 +25,6 @@ export default function HomePage() {
   const [comunicados, setComunicados] = useState<Comunicado[]>([]);
   const [ausencias, setAusencias] = useState<Ausencia[]>([]);
   const [carousel, setCarousel] = useState<{ url: string; descripcion: string }[]>([]);
-  const [galeriaCount, setGaleriaCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,7 +45,6 @@ export default function HomePage() {
         });
         setComunicados(arr);
       }
-      if (gal.count !== null) setGaleriaCount(gal.count);
       setLoading(false);
     });
 

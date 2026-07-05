@@ -388,7 +388,7 @@ function DocentesInner() {
                 </thead>
                 <tbody>
                   <AnimatePresence mode="popLayout">
-                    {historialFiltrado.map((a, i) => {
+                    {historialFiltrado.map((a) => {
                       const hEst = horarioEstilos[a.horario || ""] || { bg: "bg-purple-50", color: "text-purple-700" };
                       return (
                         <motion.tr

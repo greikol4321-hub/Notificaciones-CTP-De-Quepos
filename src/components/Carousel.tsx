@@ -44,8 +44,7 @@ export default function Carousel({ images }: Props) {
             <button
               key={i}
               onClick={() => setIdx(i)}
-              className="cursor-pointer rounded-full transition-all duration-300 ease-out"
-              className={`rounded-full transition-all duration-300 ease-out ${i === idx ? "w-6 bg-white" : "w-2.5 bg-white/50"}`}
+              className={`cursor-pointer rounded-full transition-all duration-300 ease-out ${i === idx ? "w-6 bg-white" : "w-2.5 bg-white/50"}`}
             />
           ))}
         </div>
