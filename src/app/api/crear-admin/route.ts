@@ -1,6 +1,43 @@
 import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST() {
+// ADVERTENCIA: Esta ruta debe eliminarse o ADMIN_SETUP_SECRET debe rotarse/eliminarse
+// de las variables de entorno una vez creado el primer admin real en producción.
+// El setupSecret es solo para bootstrap inicial cuando aún no hay admins en el sistema.
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  const { setupSecret } = body;
+  const isSetupMode = setupSecret && setupSecret === process.env.ADMIN_SETUP_SECRET;
+
+  if (!isSetupMode) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return request.cookies.getAll(); },
+          setAll() {},
+        },
+      },
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+
+    const { data: perfil } = await supabase
+      .from("usuarios_perfil")
+      .select("rol")
+      .eq("user_id", user.id)
+      .single();
+
+    if (!perfil || perfil.rol !== "admin") {
+      return NextResponse.json({ error: "No tienes permiso" }, { status: 403 });
+    }
+  }
+
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -28,11 +65,11 @@ export async function POST() {
           rol: "admin",
         }, { onConflict: "user_id" });
 
-        if (upsertError) return Response.json({ error: upsertError.message }, { status: 500 });
-        return Response.json({ email, password, mensaje: "Admin ya existía, perfil actualizado." });
+        if (upsertError) return NextResponse.json({ error: upsertError.message }, { status: 500 });
+        return NextResponse.json({ email, password, mensaje: "Admin ya existía, perfil actualizado." });
       }
     }
-    return Response.json({ error: createError.message }, { status: 500 });
+    return NextResponse.json({ error: createError.message }, { status: 500 });
   }
 
   const { error: profileError } = await supabase.from("usuarios_perfil").insert({
@@ -42,7 +79,7 @@ export async function POST() {
     rol: "admin",
   });
 
-  if (profileError) return Response.json({ error: profileError.message }, { status: 500 });
+  if (profileError) return NextResponse.json({ error: profileError.message }, { status: 500 });
 
-  return Response.json({ email, password, mensaje: "Admin creado exitosamente." });
+  return NextResponse.json({ email, password, mensaje: "Admin creado exitosamente." });
 }

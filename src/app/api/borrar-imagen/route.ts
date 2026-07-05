@@ -1,8 +1,36 @@
 import { createClient } from "@supabase/supabase-js";
-import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: Request) {
-  const { url } = await req.json();
+export async function POST(request: NextRequest) {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll(); },
+        setAll() {},
+      },
+    },
+  );
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
+  const { data: perfil } = await supabase
+    .from("usuarios_perfil")
+    .select("rol")
+    .eq("user_id", user.id)
+    .single();
+
+  const rolesPermitidos = ["admin", "docente_guia_admin"];
+  if (!perfil || !rolesPermitidos.includes(perfil.rol)) {
+    return NextResponse.json({ error: "No tienes permiso" }, { status: 403 });
+  }
+
+  const { url } = await request.json();
   if (!url) return NextResponse.json({ error: "URL requerida" }, { status: 400 });
 
   const srv = createClient(
