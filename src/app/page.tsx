@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Megaphone, ClipboardText, User, Calendar, FilePdf } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import Carousel from "@/components/Carousel";
+import ModalSuscripcion from "@/components/ModalSuscripcion";
 
 
 
@@ -285,6 +286,8 @@ export default function HomePage() {
           </div>
         </div>
       </motion.section>
+
+      <ModalSuscripcion />
     </motion.div>
   );
 }
