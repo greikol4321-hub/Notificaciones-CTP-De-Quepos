@@ -62,7 +62,8 @@ function UploadInner() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
     const file = fd.get("imagen") as File;
     const destino = fd.get("destino") as string;
     if (!file || !destino) return;
@@ -92,7 +93,7 @@ function UploadInner() {
         throw dbErr;
       }
       toast("success", "Imagen publicada", "La imagen se subió correctamente.");
-      e.currentTarget.reset();
+      form.reset();
       setPreview(null);
       const nueva: Imagen = { url: pub.publicUrl, destino, descripcion: file.name };
       if (destino === "carrusel") setCarrusel((p) => [nueva, ...p]);
