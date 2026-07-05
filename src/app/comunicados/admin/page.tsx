@@ -103,7 +103,7 @@ function ComAdminInner() {
         fetch("/api/notificar-comunicado", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ titulo, contenido }),
+          body: JSON.stringify({ titulo, contenido, color_borde: color }),
         }).then((r) => r.json()).then((j) => {
           if (j.ok) {
             if (j.enviados > 0) toast("success", `Notificación enviada a ${j.enviados} de ${j.total} suscriptores`);

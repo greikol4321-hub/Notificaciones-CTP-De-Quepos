@@ -29,10 +29,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No tienes permiso" }, { status: 403 });
   }
 
-  const { titulo, contenido } = await request.json();
+  const { titulo, contenido, color_borde } = await request.json();
   if (!titulo) {
     return NextResponse.json({ error: "Título requerido" }, { status: 400 });
   }
+
+  const color = color_borde === "#e74c3c" ? "🔴 Urgente" : "🟢 Informativo";
 
   const phone = process.env.CALLMEBOT_PHONE;
   const apiKey = process.env.CALLMEBOT_APIKEY;
@@ -54,11 +56,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ ok: true, enviados: 0, total: 0 });
   }
 
-  const mensaje = `━━━ NUEVO COMUNICADO OFICIAL ━━━
+  const mensaje = `📢 NUEVO COMUNICADO
 
-${titulo}${contenido ? `\n\n${contenido}` : ""}
+${color}
+"${titulo}"
 
-━━━ Sistema de Notificaciones - CTP de Quepos ━━━`;
+Ingrese al sistema:
+https://notificaciones-ctp-quepos.vercel.app`;
 
   const resultados: { telefono: string; ok: boolean; error?: string }[] = [];
 
