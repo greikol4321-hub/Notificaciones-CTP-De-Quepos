@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   User, CalendarBlank, Clock, Note, MagnifyingGlass,
   PencilSimple, TrashSimple,
-  PaperPlaneTilt, Megaphone, Image, ShieldCheck, CaretDown,
+  PaperPlaneTilt, Megaphone, Image as ImageIcon, ShieldCheck, CaretDown,
   FileText, Plus, FloppyDisk,
 } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
@@ -119,7 +119,7 @@ function DocentesInner() {
 
     setFInicio(""); setFFin(""); setRazon(""); setHorario("Todo el día"); setDetalle("");
     cargarHistorial(user.id);
-  }, [fInicio, fFin, razon, horario, detalle, user, perfil, toast, loading, supabase, cargarHistorial]);
+  }, [fInicio, fFin, razon, horario, detalle, user, perfil, toast, loading, supabase, cargarHistorial, today]);
 
   async function eliminar(id: number) {
     if (!user) return;
@@ -211,7 +211,7 @@ function DocentesInner() {
               onClick={() => router.push("/subir-imagen")}
               className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97]"
             >
-              <Image size={14} weight="bold" />
+              <ImageIcon size={14} weight="bold" />
               Subir Imagen a Galeria
             </button>
           </div>
