@@ -33,8 +33,7 @@ export default function HomePage() {
     Promise.all([
       supabase.from("imagenes").select("url,descripcion").eq("destino", "carrusel").order("id", { ascending: true }),
       supabase.from("comunicados").select("*").order("creado_en", { ascending: false }).limit(6),
-      supabase.from("imagenes").select("id", { count: "exact", head: true }).neq("destino", "carrusel"),
-    ]).then(([car, com, gal]) => {
+    ]).then(([car, com]) => {
       if (car.data) setCarousel(car.data);
       if (com.data) {
         const arr = [...com.data] as Comunicado[];
@@ -61,7 +60,7 @@ export default function HomePage() {
   const hoyCR = ahoraCR.toLocaleDateString("en-CA");
   const crH = ahoraCR.getHours() * 60 + ahoraCR.getMinutes();
   const ausentesVisibles = ausencias.filter((a) => {
-    const activoHoy = a.fecha <= hoyCR && a.fecha_fin >= hoyCR;
+    const activoHoy = a.fecha <= hoyCR && (a.fecha_fin ?? a.fecha) >= hoyCR;
     if (activoHoy) {
       if (a.horario === "Mañana" && crH >= 720) return false;
       if (a.horario === "Tarde" && crH >= 990) return false;
