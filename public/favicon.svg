@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0F2B4B"/>
+  <path d="M32 10L18 22v12c0 10 6 18 14 21 8-3 14-11 14-21V22L32 10z" fill="#C9972E"/>
+  <path d="M32 14L22 23v10c0 8 4.5 14.5 10 17 5.5-2.5 10-9 10-17V23L32 14z" fill="#0F2B4B"/>
+  <text x="32" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#fff">CTP</text>
+</svg>

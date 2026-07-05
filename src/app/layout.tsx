@@ -28,6 +28,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "CTP Quepos - Notificaciones",
   description: "Sistema de notificaciones institucionales del CTP Quepos",
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
 };
 
 export default function RootLayout({
