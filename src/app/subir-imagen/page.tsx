@@ -129,33 +129,37 @@ function UploadInner() {
             <ImageSquare size={13} weight="bold" />
             Seleccionar imagen
           </label>
-          <input
-            type="file"
-            name="imagen"
-            accept="image/*"
-            required
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) {
-                const reader = new FileReader();
-                reader.onload = (ev) => setPreview(ev.target?.result as string);
-                reader.readAsDataURL(f);
-              } else {
-                setPreview(null);
-              }
-            }}
-            className="w-full text-sm"
-          />
-          <small className="mt-1 block text-gray-500">Formatos: JPG, PNG, GIF.</small>
+          <label className="relative flex min-h-[180px] cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50/50 px-4 py-6 text-center transition-all hover:border-primary/40 hover:bg-primary/5">
+            <input type="file" name="imagen" accept="image/*" required
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) {
+                  const reader = new FileReader();
+                  reader.onload = (ev) => setPreview(ev.target?.result as string);
+                  reader.readAsDataURL(f);
+                } else {
+                  setPreview(null);
+                }
+              }}
+              className="hidden" />
+            {preview ? (
+              <div className="w-full max-w-[400px]">
+                <img src={preview} alt="" className="mx-auto max-h-[200px] w-auto rounded-lg object-contain shadow-md" />
+                <p className="mt-2 text-xs text-gray-400">Toca para cambiar imagen</p>
+              </div>
+            ) : (
+              <>
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <Upload size={22} weight="bold" className="text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-700">Arrastra una imagen o haz clic para seleccionar</p>
+                  <p className="mt-0.5 text-xs text-gray-400">JPG, PNG, GIF — hasta 10 MB</p>
+                </div>
+              </>
+            )}
+          </label>
         </div>
-
-        {preview && (
-          <div className="mb-5 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-5 text-center">
-            <p className="mb-3 text-sm font-medium text-gray-500">Vista Previa</p>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={preview} alt="" className="mx-auto max-h-[300px] rounded-md object-contain shadow-md" />
-          </div>
-        )}
 
         <div className="mb-5">
           <label className="mb-1.5 flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-wider text-gray-500">
