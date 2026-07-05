@@ -2,40 +2,42 @@ import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
-// ADVERTENCIA: Esta ruta debe eliminarse o ADMIN_SETUP_SECRET debe rotarse/eliminarse
-// de las variables de entorno una vez creado el primer admin real en producción.
-// El setupSecret es solo para bootstrap inicial cuando aún no hay admins en el sistema.
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { setupSecret } = body;
-  const isSetupMode = setupSecret && setupSecret === process.env.ADMIN_SETUP_SECRET;
+  const { email, password } = body;
 
-  if (!isSetupMode) {
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() { return request.cookies.getAll(); },
-          setAll() {},
-        },
+  if (!email || !password) {
+    return NextResponse.json({ error: "Faltan campos requeridos: email, password" }, { status: 400 });
+  }
+
+  if (password.length < 12) {
+    return NextResponse.json({ error: "La contraseña debe tener al menos 12 caracteres" }, { status: 400 });
+  }
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll(); },
+        setAll() {},
       },
-    );
+    },
+  );
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-    }
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
 
-    const { data: perfil } = await supabase
-      .from("usuarios_perfil")
-      .select("rol")
-      .eq("user_id", user.id)
-      .single();
+  const { data: perfil } = await supabase
+    .from("usuarios_perfil")
+    .select("rol")
+    .eq("user_id", user.id)
+    .single();
 
-    if (!perfil || perfil.rol !== "admin") {
-      return NextResponse.json({ error: "No tienes permiso" }, { status: 403 });
-    }
+  if (!perfil || perfil.rol !== "admin") {
+    return NextResponse.json({ error: "No tienes permiso" }, { status: 403 });
   }
 
   const supabase = createClient(
@@ -43,9 +45,6 @@ export async function POST(request: NextRequest) {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
-
-  const email = "admin@ctpq.ed.cr";
-  const password = "Admin123!";
 
   const { data: user, error: createError } = await supabase.auth.admin.createUser({
     email,
