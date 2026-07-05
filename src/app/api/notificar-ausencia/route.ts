@@ -53,21 +53,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Servicio no disponible" }, { status: 500 });
   }
 
-  const mensaje = [
-    "═".repeat(22),
-    "NOTIFICACIÓN DE AUSENCIA",
-    "═".repeat(22),
-    "",
-    `INSTITUCIÓN: CTP de Quepos`,
-    `DOCENTE:     ${perfil.nombre_completo}`,
-    `FECHA:       ${fecha}`,
-    `HORARIO:     ${horario || "Todo el día"}`,
-    `RAZÓN:       ${razon}`,
-    `DETALLE:     ${detalle || "N/A"}`,
-    "",
-    "─".repeat(22),
-    "Sistema de Notificaciones",
-  ].join("\n");
+  const mensaje = `*AUSENCIA REGISTRADA*
+
+  👤 ${perfil.nombre_completo}
+  📅 ${fecha}
+  ⏰ ${horario || "Todo el día"}
+  📋 ${razon}${detalle ? `\n  💬 ${detalle}` : ""}
+
+  ─ ${new Date().toLocaleDateString("es-CR", { timeZone: "America/Costa_Rica" })} · CTP de Quepos`;
 
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
 
