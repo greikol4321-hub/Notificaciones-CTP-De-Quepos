@@ -35,8 +35,7 @@ function UploadInner() {
       setGaleria(data.filter((i) => i.destino !== "carrusel"));
       setCarrusel(data.filter((i) => i.destino === "carrusel"));
     }
-    loading(false);
-  }, [supabase, loading]);
+  }, [supabase]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -51,7 +50,8 @@ function UploadInner() {
             router.push("/panel-ausencias");
             return;
           }
-          cargar();
+          loading(true, "Cargando imagenes...");
+          cargar().finally(() => loading(false));
         });
     });
   }, [router, supabase, cargar]);

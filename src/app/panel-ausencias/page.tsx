@@ -80,11 +80,9 @@ function DocentesInner() {
   const [detalle, setDetalle] = useState("");
 
   const cargarHistorial = useCallback(async (userId: string) => {
-    loading(true, "Cargando historial...");
     const { data } = await supabase.from("ausencias").select("*").eq("user_id", userId).order("fecha", { ascending: false });
     if (data) setHistorial(data as Ausencia[]);
-    loading(false);
-  }, [supabase, loading]);
+  }, [supabase]);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user: u } }) => {
