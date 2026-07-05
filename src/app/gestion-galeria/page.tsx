@@ -76,7 +76,7 @@ function UploadInner() {
     toast("success", "Imagen publicada", "La imagen se subió correctamente.");
     e.currentTarget.reset();
     setPreview(null);
-    cargar();
+    cargar().finally(() => loading(false));
   }
 
   async function borrar(img: Imagen) {
@@ -92,7 +92,7 @@ function UploadInner() {
     loading(false);
     if (!res.ok) { toast("error", "Error", data.error); return; }
     toast("success", "Imagen borrada", "La imagen se eliminó correctamente del servidor.");
-    cargar();
+    cargar().finally(() => loading(false));
   }
 
   const mostrar = tab === "galeria" ? galeria : carrusel;
