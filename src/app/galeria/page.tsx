@@ -1,15 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ImageSquare, MagnifyingGlass, X } from "@phosphor-icons/react";
+import { ImageSquare } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import Lightbox from "@/components/Lightbox";
 
 export default function GaleriaPage() {
   const [images, setImages] = useState<{ url: string; descripcion: string }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
   const [lightbox, setLightbox] = useState<string | null>(null);
   const close = useCallback(() => setLightbox(null), []);
 
@@ -21,13 +20,7 @@ export default function GaleriaPage() {
     });
   }, []);
 
-  const filtered = useMemo(() => {
-    if (!search) return images;
-    const q = search.toLowerCase();
-    return images.filter((i) => i.descripcion.toLowerCase().includes(q));
-  }, [images, search]);
-
-  const lightboxIdx = useMemo(() => lightbox ? filtered.findIndex((i) => i.url === lightbox) : -1, [lightbox, filtered]);
+  const lightboxIdx = lightbox ? images.findIndex((i) => i.url === lightbox) : -1;
 
   return (
     <div className="mx-auto max-w-[1200px] space-y-10">
@@ -46,34 +39,18 @@ export default function GaleriaPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
-        <div className="relative">
-          <MagnifyingGlass size={14} weight="bold" className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar..."
-            className="w-full rounded-full border border-gray-200 bg-white py-2.5 pl-9 pr-4 text-sm outline-none transition-all focus:border-primary/30 focus:ring-2 focus:ring-primary/10 sm:w-52" />
-        </div>
-      </div>
-
       {loading ? (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className={`animate-pulse rounded-2xl bg-gray-100 ${i % 5 === 0 ? "row-span-2" : ""}`} style={{ aspectRatio: i % 3 === 0 ? "3/4" : "4/3" }} />
+            <div key={i} className="animate-pulse rounded-2xl bg-gray-100" style={{ aspectRatio: "1" }} />
           ))}
         </div>
-      ) : filtered.length === 0 ? (
+      ) : images.length === 0 ? (
         <div className="flex flex-col items-center gap-4 py-24 text-gray-400">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
             <ImageSquare size={28} weight="thin" />
           </div>
-          <p className="text-sm font-semibold text-gray-500">
-            {search ? "No hay resultados para esa b&uacute;squeda." : "No hay im&aacute;genes en la Galer&iacute;a"}
-          </p>
-          {search && (
-            <button onClick={() => setSearch("")}
-              className="cursor-pointer rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary transition-all hover:bg-primary/20">
-              Limpiar filtros
-            </button>
-          )}
+          <p className="text-sm font-semibold text-gray-500">No hay im&aacute;genes en la Galer&iacute;a</p>
         </div>
       ) : (
         <motion.div
@@ -82,7 +59,7 @@ export default function GaleriaPage() {
           variants={{ show: { transition: { staggerChildren: 0.05 } } }}
           className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
         >
-          {filtered.map((img, i) => (
+          {images.map((img) => (
             <motion.button
               key={img.url}
               variants={{
@@ -91,10 +68,8 @@ export default function GaleriaPage() {
               }}
               transition={{ type: "spring", stiffness: 100, damping: 20 }}
               onClick={() => setLightbox(img.url)}
-              className={`group relative cursor-pointer overflow-hidden rounded-2xl bg-gray-100 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl ${
-                i === 0 ? "col-span-2 row-span-2 sm:col-span-2 sm:row-span-2" : ""
-              } ${i % 7 === 0 ? "sm:col-span-2" : ""} ${i % 5 === 0 ? "sm:row-span-2" : ""}`}
-              style={{ aspectRatio: i === 0 ? "auto" : i % 3 === 0 ? "3/4" : "4/3" }}
+              className="group relative cursor-pointer overflow-hidden rounded-2xl bg-gray-100 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl"
+              style={{ aspectRatio: "1" }}
             >
               <img src={img.url} alt={img.descripcion} className="h-full w-full object-cover transition-all duration-500 ease-out group-hover:scale-105" loading="lazy" />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -111,10 +86,10 @@ export default function GaleriaPage() {
           <Lightbox
             src={lightbox}
             onClose={close}
-            onPrev={lightboxIdx > 0 ? () => setLightbox(filtered[lightboxIdx - 1].url) : undefined}
-            onNext={lightboxIdx < filtered.length - 1 ? () => setLightbox(filtered[lightboxIdx + 1].url) : undefined}
+            onPrev={lightboxIdx > 0 ? () => setLightbox(images[lightboxIdx - 1].url) : undefined}
+            onNext={lightboxIdx < images.length - 1 ? () => setLightbox(images[lightboxIdx + 1].url) : undefined}
             index={lightboxIdx + 1}
-            total={filtered.length}
+            total={images.length}
           />
         )}
       </AnimatePresence>
