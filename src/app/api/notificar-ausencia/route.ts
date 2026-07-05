@@ -53,8 +53,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Servicio no disponible" }, { status: 500 });
   }
 
-  const mensaje = `NOTIFICACIÓN OFICIAL DE AUSENCIA DOCENTE
+  const mensaje = `═════════════════════════
+NOTIFICACIÓN OFICIAL DE AUSENCIA DOCENTE
 CTP DE QUEPOS
+═════════════════════════
 
 Estimada Dirección:
 
@@ -65,6 +67,7 @@ Por medio del Sistema de Notificaciones, se notifica el reporte del siguiente fu
   Horario:      ${horario || "Todo el día"}
   Motivo:       ${razon}${detalle ? `\n  Detalle:      ${detalle}` : ""}
 
+─────────────────────────
 Se ruega tomar nota para los controles de asistencia y suplencias correspondientes.
 
 ─ Sistema de Notificaciones - CTP de Quepos`;
