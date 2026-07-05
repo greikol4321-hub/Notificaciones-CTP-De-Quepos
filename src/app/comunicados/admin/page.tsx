@@ -230,20 +230,20 @@ function ComAdminInner() {
             className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-9 pr-3.5 text-sm shadow-sm outline-none transition-all focus:border-primary/30 focus:ring-3 focus:ring-primary/8" />
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-          <table className="hidden w-full text-sm sm:table">
+        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+          <table className="hidden w-full table-fixed text-sm sm:table">
             <thead>
               <tr className="bg-primary text-left text-[0.68rem] font-bold uppercase tracking-wider text-white/90">
-                <th className="px-4 py-3.5 pl-5">
+                <th className="w-[110px] px-4 py-3.5 pl-5">
                   <div className="flex items-center gap-1.5"><Calendar size={13} weight="bold" />Fecha</div>
                 </th>
                 <th className="px-4 py-3.5">
                   <div className="flex items-center gap-1.5"><Note size={13} weight="bold" />Titulo y Contenido</div>
                 </th>
-                <th className="px-4 py-3.5">
+                <th className="w-[110px] px-4 py-3.5">
                   <div className="flex items-center gap-1.5"><User size={13} weight="bold" />Autor</div>
                 </th>
-                <th className="px-4 py-3.5 pr-5 text-right">
+                <th className="w-[130px] px-4 py-3.5 pr-5 text-right">
                   <div className="flex items-center justify-end gap-1.5"><PencilSimple size={13} weight="bold" />Accion</div>
                 </th>
               </tr>
@@ -256,8 +256,8 @@ function ComAdminInner() {
                   <tr key={c.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50/80">
                     <td className="px-4 py-3 pl-5 font-semibold whitespace-nowrap text-gray-800">{new Date(c.creado_en).toLocaleDateString("es-CR")}</td>
                     <td className="break-words px-4 py-3">
-                      <strong style={{ color: c.color_borde }}>{c.titulo}</strong>
-                      <div className="mt-1 text-xs text-gray-500">{c.contenido}</div>
+                      <strong className="break-words" style={{ color: c.color_borde }}>{c.titulo}</strong>
+                      <div className="mt-1 break-words text-xs text-gray-500">{c.contenido}</div>
                       {c.pdf_url && (
                         <a href={c.pdf_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 no-underline transition-colors hover:bg-amber-100">
                           <FilePdf size={13} weight="bold" />
@@ -295,10 +295,10 @@ function ComAdminInner() {
               filtrados.map((c) => (
                 <div key={c.id} className="break-words rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                   <div className="mb-1.5 flex items-start justify-between gap-2">
-                    <strong className="text-sm" style={{ color: c.color_borde }}>{c.titulo}</strong>
+                    <strong className="min-w-0 break-words text-sm" style={{ color: c.color_borde }}>{c.titulo}</strong>
                     <span className="shrink-0 text-[0.6rem] font-medium text-gray-400">{new Date(c.creado_en).toLocaleDateString("es-CR")}</span>
                   </div>
-                  <p className="mb-2.5 text-xs leading-relaxed text-gray-500">{c.contenido}</p>
+                  <p className="mb-2.5 break-words text-xs leading-relaxed text-gray-500">{c.contenido}</p>
                   {c.pdf_url && (
                     <a href={c.pdf_url} target="_blank" rel="noopener noreferrer" className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[0.65rem] font-bold text-amber-700 no-underline transition-colors hover:bg-amber-100">
                       <FilePdf size={12} weight="bold" />
