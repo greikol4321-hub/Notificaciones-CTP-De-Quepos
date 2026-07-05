@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Megaphone, Bell, Note, FilePdf, PencilSimple,
+  Megaphone, Note, FilePdf, PencilSimple,
   TrashSimple, FloppyDisk, X, Calendar, User, MagnifyingGlass,
 } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
@@ -38,7 +38,6 @@ function ComAdminInner() {
   const [color, setColor] = useState("#27ae60");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
-  const [notificarWA, setNotificarWA] = useState(false);
 
   const [editId, setEditId] = useState<number | null>(null);
   const [editTitulo, setEditTitulo] = useState("");
@@ -99,26 +98,14 @@ function ComAdminInner() {
       });
       if (error) throw error;
       toast("success", "Comunicado publicado", "Visible para todos los usuarios");
-      if (notificarWA) {
-        fetch("/api/notificar-comunicado", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ titulo, contenido, color_borde: color }),
-        }).then((r) => r.json()).then((j) => {
-          if (j.ok) {
-            if (j.enviados > 0) toast("success", `Notificación enviada a ${j.enviados} de ${j.total} suscriptores`);
-            else toast("warning", "Sin notificaciones", `${j.total === 0 ? "No hay suscriptores registrados" : "No se pudo enviar a ningún suscriptor. Revisá que los números tengan +506."}`);
-          } else toast("error", "Error al notificar", j.error);
-        });
-      }
-      setTitulo(""); setContenido(""); setColor("#27ae60"); setPdfFile(null); setNotificarWA(false);
+      setTitulo(""); setContenido(""); setColor("#27ae60"); setPdfFile(null);
       refetch();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error desconocido";
       toast("error", "Error", msg);
       if (pdfData.pdf_url) eliminarPdf(pdfData.pdf_url).catch(() => {});
     } finally { loading(false); }
-  }, [titulo, contenido, color, pdfFile, notificarWA, user, supabase, toast, loading, refetch, subirPdf, eliminarPdf]);
+  }, [titulo, contenido, color, pdfFile, user, supabase, toast, loading, refetch, subirPdf, eliminarPdf]);
 
   async function handleEditSave() {
     loading(true, "Guardando...");
@@ -223,11 +210,6 @@ function ComAdminInner() {
               ))}
             </div>
           </div>
-          <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-gray-600">
-            <input type="checkbox" checked={notificarWA} onChange={(e) => setNotificarWA(e.target.checked)} className="accent-primary" />
-            <Bell size={15} weight="fill" className="text-accent" />
-            Notificar por push a suscriptores
-          </label>
           <button type="submit"
             className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
             <Megaphone size={15} weight="bold" />
