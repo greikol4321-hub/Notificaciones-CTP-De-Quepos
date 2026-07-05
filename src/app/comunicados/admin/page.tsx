@@ -194,15 +194,17 @@ function ComAdminInner() {
             <div className="flex justify-center gap-3 sm:justify-start sm:gap-4">
               {colores.map((c) => (
                 <button type="button" key={c.value} onClick={() => setColor(c.value)}
-                  className={`relative flex cursor-pointer items-center justify-center transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${color === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
-                  <span className="block h-9 w-9 rounded-full border-2 border-white/60 shadow-inner sm:h-10 sm:w-10" style={{ backgroundColor: c.value }} />
-                  {color === c.value && (
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="h-4 w-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </span>
-                  )}
+                  className={`relative flex flex-col items-center gap-1.5 cursor-pointer transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${color === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
+                  <span className="relative block h-9 w-9 rounded-full border-2 border-white/60 shadow-inner sm:h-10 sm:w-10" style={{ backgroundColor: c.value }}>
+                    {color === c.value && (
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" className="h-4 w-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </span>
+                    )}
+                  </span>
+                  <span className="text-[0.55rem] font-bold leading-tight text-gray-500 sm:text-[0.6rem]">{c.label.split(" ")[0]}</span>
                 </button>
               ))}
             </div>
@@ -381,15 +383,17 @@ function ComAdminInner() {
                   <div className="flex justify-center gap-3 sm:justify-start sm:gap-4">
                     {colores.map((c) => (
                       <button type="button" key={c.value} onClick={() => setEditColor(c.value)}
-                        className={`relative flex cursor-pointer items-center justify-center transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${editColor === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
-                        <span className="block h-9 w-9 rounded-full border-2 border-white/60 shadow-inner sm:h-10 sm:w-10" style={{ backgroundColor: c.value }} />
-                        {editColor === c.value && (
-                          <span className="absolute inset-0 flex items-center justify-center">
-                            <svg viewBox="0 0 24 24" className="h-4 w-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                          </span>
-                        )}
+                        className={`relative flex flex-col items-center gap-1.5 cursor-pointer transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${editColor === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
+                        <span className="relative block h-9 w-9 rounded-full border-2 border-white/60 shadow-inner sm:h-10 sm:w-10" style={{ backgroundColor: c.value }}>
+                          {editColor === c.value && (
+                            <span className="absolute inset-0 flex items-center justify-center">
+                              <svg viewBox="0 0 24 24" className="h-4 w-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-[0.55rem] font-bold leading-tight text-gray-500 sm:text-[0.6rem]">{c.label.split(" ")[0]}</span>
                       </button>
                     ))}
                   </div>
