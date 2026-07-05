@@ -8,8 +8,15 @@ const supabase = createClient(
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { accion, nombre } = body;
+  const { accion, nombre, id } = body;
   let { telefono } = body;
+
+  if (accion === "baja_por_id") {
+    if (!id) return NextResponse.json({ error: "ID requerido" }, { status: 400 });
+    const { error } = await supabase.from("suscriptores").delete().eq("id", id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ ok: true, mensaje: "Suscripción cancelada" });
+  }
 
   if (!telefono) {
     return NextResponse.json({ error: "Teléfono requerido" }, { status: 400 });
