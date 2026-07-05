@@ -56,6 +56,10 @@ function UploadInner() {
     });
   }, [router, supabase, cargar]);
 
+  function normalizarNombre(n: string) {
+    return n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") || "imagen";
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -63,39 +67,64 @@ function UploadInner() {
     const destino = fd.get("destino") as string;
     if (!file || !destino) return;
 
-    loading(true, "Publicando imagen...");
-    const res = await fetch("/api/subir-imagen", { method: "POST", body: fd });
-    const data = await res.json();
-    loading(false);
-
-    if (!res.ok) {
-      toast("error", "Error", data.error || "Error al subir la imagen");
+    const tiposPermitidos = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!tiposPermitidos.includes(file.type)) {
+      toast("error", "Error", "Tipo de archivo no permitido. Solo se aceptan imágenes JPG, PNG, GIF o WEBP.");
+      return;
+    }
+    const MAX_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      toast("error", "Error", "El archivo excede el tamaño máximo de 10 MB.");
       return;
     }
 
-    toast("success", "Imagen publicada", "La imagen se subió correctamente.");
-    e.currentTarget.reset();
-    setPreview(null);
-    const nueva: Imagen = { url: data.url, destino: data.destino, descripcion: data.descripcion };
-    if (data.destino === "carrusel") setCarrusel((p) => [nueva, ...p]);
-    else setGaleria((p) => [nueva, ...p]);
+    loading(true, "Publicando imagen...");
+    try {
+      const ruta = `${destino}/${Date.now()}-${normalizarNombre(file.name)}`;
+      const { error: uploadErr } = await supabase.storage.from("imagenes").upload(ruta, file, { upsert: true });
+      if (uploadErr) throw uploadErr;
+      const { data: pub } = supabase.storage.from("imagenes").getPublicUrl(ruta);
+      const { error: dbErr } = await supabase.from("imagenes").insert({
+        url: pub.publicUrl, destino, descripcion: file.name,
+      });
+      if (dbErr) {
+        await supabase.storage.from("imagenes").remove([ruta]).catch(() => {});
+        throw dbErr;
+      }
+      toast("success", "Imagen publicada", "La imagen se subió correctamente.");
+      e.currentTarget.reset();
+      setPreview(null);
+      const nueva: Imagen = { url: pub.publicUrl, destino, descripcion: file.name };
+      if (destino === "carrusel") setCarrusel((p) => [nueva, ...p]);
+      else setGaleria((p) => [nueva, ...p]);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error al subir la imagen";
+      toast("error", "Error", msg);
+    } finally {
+      loading(false);
+    }
   }
 
   async function borrar(img: Imagen) {
     const ok = await confirm("Eliminar imagen", "Esta acción no se puede deshacer.", true);
     if (!ok) return;
     loading(true, "Borrando imagen...");
-    const res = await fetch("/api/borrar-imagen", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: img.url }),
-    });
-    const data = await res.json();
-    loading(false);
-    if (!res.ok) { toast("error", "Error", data.error); return; }
-    toast("success", "Imagen borrada", "La imagen se eliminó correctamente del servidor.");
-    setGaleria((p) => p.filter((i) => i.url !== img.url));
-    setCarrusel((p) => p.filter((i) => i.url !== img.url));
+    try {
+      const ruta = img.url.split("/").pop();
+      if (!ruta) throw new Error("URL inválida");
+      const { error: delErr } = await supabase.storage.from("imagenes").remove([ruta]);
+      if (delErr) throw delErr;
+      const { error: dbErr } = await supabase.from("imagenes").delete().eq("url", img.url);
+      if (dbErr) throw dbErr;
+      toast("success", "Imagen borrada", "La imagen se eliminó correctamente del servidor.");
+      setGaleria((p) => p.filter((i) => i.url !== img.url));
+      setCarrusel((p) => p.filter((i) => i.url !== img.url));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error al borrar la imagen";
+      toast("error", "Error", msg);
+    } finally {
+      loading(false);
+    }
   }
 
   const mostrar = tab === "galeria" ? galeria : carrusel;
