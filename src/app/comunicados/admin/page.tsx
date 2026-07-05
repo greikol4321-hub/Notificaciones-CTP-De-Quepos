@@ -28,7 +28,7 @@ function ComAdminInner() {
   const router = useRouter();
   const { toast, confirm, loading } = useNoti();
   const supabase = createClient();
-  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
+  const [user, setUser] = useState<{ id: string; name: string } | null>(null);
 
   const [comunicados, setComunicados] = useState<Comunicado[]>([]);
   const [busqueda, setBusqueda] = useState("");
@@ -51,12 +51,12 @@ function ComAdminInner() {
     async function init() {
       const { data: { user: u } } = await supabase.auth.getUser();
       if (!u) { router.push("/login"); return; }
-      setUser(u as { id: string; email?: string });
-      const { data: perfil } = await supabase.from("usuarios_perfil").select("rol").eq("user_id", u.id).single();
+      const { data: perfil } = await supabase.from("usuarios_perfil").select("rol, nombre_completo, usuario").eq("user_id", u.id).single();
       if (!perfil || !["admin", "docente_guia_admin"].includes((perfil as { rol: string }).rol)) {
         router.push("/panel-ausencias");
         return;
       }
+      setUser({ id: u.id, name: (perfil as { nombre_completo: string; usuario: string }).nombre_completo || (perfil as { usuario: string }).usuario || u.email || "Admin" });
       const { data } = await supabase.from("comunicados").select("*").order("creado_en", { ascending: false });
       if (data) setComunicados(data as Comunicado[]);
     }
@@ -94,7 +94,7 @@ function ComAdminInner() {
     try {
       if (pdfFile) pdfData = await subirPdf(pdfFile);
       const { error } = await supabase.from("comunicados").insert({
-        titulo, contenido, color_borde: color, autor: user?.email, ...pdfData,
+        titulo, contenido, color_borde: color, autor: user?.name, ...pdfData,
       });
       if (error) throw error;
       toast("success", "Comunicado publicado", "Visible para todos los usuarios");
