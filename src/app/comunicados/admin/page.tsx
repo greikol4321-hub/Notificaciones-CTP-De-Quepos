@@ -258,10 +258,10 @@ function ComAdminInner() {
                 <th className="px-4 py-3.5">
                   <div className="flex items-center gap-1.5"><Note size={13} weight="bold" />Titulo y Contenido</div>
                 </th>
-                <th className="w-[110px] px-4 py-3.5">
+                <th className="w-[160px] px-4 py-3.5">
                   <div className="flex items-center gap-1.5"><User size={13} weight="bold" />Autor</div>
                 </th>
-                <th className="w-[130px] px-4 py-3.5 pr-5 text-right">
+                <th className="w-[140px] px-4 py-3.5 pr-5 text-right">
                   <div className="flex items-center justify-end gap-1.5"><PencilSimple size={13} weight="bold" />Accion</div>
                 </th>
               </tr>
@@ -323,12 +323,12 @@ function ComAdminInner() {
                       {c.pdf_nombre || "Documento"}
                     </a>
                   )}
-                  <div className="flex flex-wrap items-center justify-between gap-1.5 border-t border-gray-50 pt-2.5 text-[0.65rem] text-gray-400">
-                    <span className="flex min-w-0 items-center gap-1">
+                  <div className="flex flex-col gap-1.5 border-t border-gray-50 pt-2.5 text-[0.65rem] text-gray-400">
+                    <span className="flex items-center gap-1">
                       <User size={11} weight="bold" className="shrink-0" />
                       <span className="truncate">{c.autor}</span>
                     </span>
-                    <div className="flex shrink-0 gap-1">
+                    <div className="flex items-center justify-end gap-1">
                       <button onClick={() => {
                         setEditId(c.id); setEditTitulo(c.titulo); setEditContenido(c.contenido || "");
                         setEditColor(c.color_borde || "#3498db"); setEditPdfUrl(c.pdf_url || "");

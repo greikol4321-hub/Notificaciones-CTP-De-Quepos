@@ -18,6 +18,9 @@ ALTER TABLE public.suscriptores
   ALTER COLUMN email SET NOT NULL;
 
 ALTER TABLE public.suscriptores
+  DROP CONSTRAINT IF EXISTS suscriptores_email_unique;
+
+ALTER TABLE public.suscriptores
   ADD CONSTRAINT suscriptores_email_unique UNIQUE (email);
 
 -- Reemplazar políticas RLS viejas por las que corresponden al flujo de email

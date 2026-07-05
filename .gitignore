@@ -43,3 +43,6 @@ next-env.d.ts
 .vercel
 .env*
 *.log
+*.tsbuildinfo
+dev_err.log
+dev_out.log
