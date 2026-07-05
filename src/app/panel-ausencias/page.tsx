@@ -296,7 +296,7 @@ function DocentesInner() {
                 <select value={horario} onChange={(e) => setHorario(e.target.value)} required
                   className="w-full appearance-none rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 pr-9 text-sm outline-none transition-all focus:border-primary/30 focus:ring-3 focus:ring-primary/8">
                   <option value="Todo el dia">Todo el dia</option>
-                  <option value="Manana">Manana (7:00 - 12:00)</option>
+                  <option value="Mañana">Mañana (7:00 - 12:00)</option>
                   <option value="Tarde">Tarde (12:00 - 16:30)</option>
                 </select>
                 <CaretDown size={14} weight="bold" className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -549,7 +549,7 @@ function DocentesInner() {
                         onChange={(e) => setEditData({ ...editData, horario: e.target.value })}
                         className="w-full appearance-none rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 pr-9 text-sm outline-none transition-all focus:border-primary/30 focus:ring-3 focus:ring-primary/8">
                         <option value="Todo el dia">Todo el dia</option>
-                        <option value="Manana">Manana (7:00 - 12:00)</option>
+                        <option value="Mañana">Mañana (7:00 - 12:00)</option>
                         <option value="Tarde">Tarde (12:00 - 16:30)</option>
                       </select>
                       <CaretDown size={14} weight="bold" className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400" />

@@ -218,7 +218,7 @@ export default function HomePage() {
                   <td colSpan={6} className="px-4 py-12 text-center">
                     <div className="inline-flex items-center gap-2 text-sm text-gray-400">
                       <ClipboardText size={20} className="text-gray-300" />
-                      Todos los docentes estan presentes hoy y manana.
+                      Todos los docentes están presentes hoy y mañana.
                     </div>
                   </td>
                 </tr>
