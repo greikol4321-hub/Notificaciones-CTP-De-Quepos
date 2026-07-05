@@ -105,8 +105,10 @@ function ComAdminInner() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ titulo, contenido }),
         }).then((r) => r.json()).then((j) => {
-          if (j.ok) toast("success", `Notificación enviada a ${j.enviados} de ${j.total} suscriptores`);
-          else toast("error", "Error al notificar", j.error);
+          if (j.ok) {
+            if (j.enviados > 0) toast("success", `Notificación enviada a ${j.enviados} de ${j.total} suscriptores`);
+            else toast("warning", "Sin notificaciones", `${j.total === 0 ? "No hay suscriptores registrados" : "No se pudo enviar a ningún suscriptor. Revisá que los números tengan +506."}`);
+          } else toast("error", "Error al notificar", j.error);
         });
       }
       setTitulo(""); setContenido(""); setColor("#27ae60"); setPdfFile(null); setNotificarWA(false);

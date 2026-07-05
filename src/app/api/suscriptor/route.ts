@@ -7,14 +7,16 @@ const supabase = createClient(
 );
 
 export async function POST(request: NextRequest) {
-  const { accion, telefono, nombre } = await request.json();
+  let { accion, telefono, nombre } = await request.json();
 
   if (!telefono) {
     return NextResponse.json({ error: "Teléfono requerido" }, { status: 400 });
   }
 
-  const telValido = /^\+506\d{8}$/.test(telefono);
-  if (!telValido) {
+  const limpio = String(telefono).replace(/[\s\-\(\)]/g, "");
+  if (/^\d{8}$/.test(limpio)) telefono = "+506" + limpio;
+
+  if (!/^\+506\d{8}$/.test(telefono)) {
     return NextResponse.json({ error: "Teléfono inválido. Debe ser +506 seguido de 8 dígitos" }, { status: 400 });
   }
 

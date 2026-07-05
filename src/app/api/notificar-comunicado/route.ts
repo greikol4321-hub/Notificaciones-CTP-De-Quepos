@@ -60,14 +60,34 @@ ${titulo}${contenido ? `\n\n${contenido}` : ""}
 
 ━━━ Sistema de Notificaciones - CTP de Quepos ━━━`;
 
-  const resultados = await Promise.allSettled(
-    suscriptores.map((s) => {
-      const url = `https://api.callmebot.com/whatsapp.php?phone=${s.telefono}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
-      return fetch(url);
-    }),
-  );
+  const resultados: { telefono: string; ok: boolean; error?: string }[] = [];
 
-  const enviados = resultados.filter((r) => r.status === "fulfilled" && r.value.ok).length;
+  for (const s of suscriptores) {
+    const tel = /^\d{8}$/.test(s.telefono) ? "+506" + s.telefono : s.telefono;
+    const url = `https://api.callmebot.com/whatsapp.php?phone=${tel}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
+    let ok = false;
+    let err = "";
+    for (let i = 0; i < 2; i++) {
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        if (text.includes("Message queued")) { ok = true; break; }
+        err = text.replace(/<[^>]+>/g, "").trim();
+      } catch (e) {
+        err = String(e);
+      }
+      await new Promise((r) => setTimeout(r, 500));
+    }
+    resultados.push({ telefono: tel, ok, error: err });
+    await new Promise((r) => setTimeout(r, 300));
+  }
+
+  const enviados = resultados.filter((r) => r.ok).length;
+  const fallos = resultados.filter((r) => !r.ok);
+
+  if (fallos.length > 0) {
+    console.error("Fallos WhatsApp:", fallos.map((f) => `${f.telefono}: ${f.error}`).join(" | "));
+  }
 
   return NextResponse.json({ ok: true, enviados, total: suscriptores.length });
 }
