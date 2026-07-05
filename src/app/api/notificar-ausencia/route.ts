@@ -58,7 +58,7 @@ CTP DE QUEPOS
 
 Estimada Dirección:
 
-Por medio del Sistema Integral de Ausencias, se notifica el reporte del siguiente funcionario:
+Por medio del Sistema de Notificaciones, se notifica el reporte del siguiente funcionario:
 
   Funcionario:  ${perfil.nombre_completo}
   Fecha:        ${fecha}
@@ -67,7 +67,7 @@ Por medio del Sistema Integral de Ausencias, se notifica el reporte del siguient
 
 Se ruega tomar nota para los controles de asistencia y suplencias correspondientes.
 
-─ Sistema Integral de Ausencias - CTP de Quepos`;
+─ Sistema de Notificaciones - CTP de Quepos`;
 
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
 
