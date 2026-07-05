@@ -93,7 +93,7 @@ function UploadInner() {
         throw dbErr;
       }
       toast("success", "Imagen publicada", "La imagen se subió correctamente.");
-      form.reset();
+      form?.reset();
       setPreview(null);
       const nueva: Imagen = { url: pub.publicUrl, destino, descripcion: file.name };
       if (destino === "carrusel") setCarrusel((p) => [nueva, ...p]);
