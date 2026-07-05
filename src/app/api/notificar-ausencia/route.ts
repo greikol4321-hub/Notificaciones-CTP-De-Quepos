@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
   }
 
   const mensaje = `━━━ NOTIFICACIÓN OFICIAL DE AUSENCIA DOCENTE ━━━
-CTP DE QUEPOS
 
 Estimada Dirección:
 
