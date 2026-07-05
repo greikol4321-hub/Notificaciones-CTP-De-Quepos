@@ -6,20 +6,10 @@ import { ImageSquare, MagnifyingGlass, X } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import Lightbox from "@/components/Lightbox";
 
-const ALL = "todas";
-
-const categorias = [
-  { id: ALL, label: "Todas" },
-  { id: "actividades", label: "Actividades" },
-  { id: "eventos", label: "Eventos" },
-  { id: "proyectos", label: "Proyectos" },
-];
-
 export default function GaleriaPage() {
   const [images, setImages] = useState<{ url: string; descripcion: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [cat, setCat] = useState(ALL);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const close = useCallback(() => setLightbox(null), []);
 
@@ -32,14 +22,10 @@ export default function GaleriaPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    let r = images;
-    if (cat !== ALL) r = r.filter((i) => i.descripcion.toLowerCase().includes(cat));
-    if (search) {
-      const q = search.toLowerCase();
-      r = r.filter((i) => i.descripcion.toLowerCase().includes(q));
-    }
-    return r;
-  }, [images, cat, search]);
+    if (!search) return images;
+    const q = search.toLowerCase();
+    return images.filter((i) => i.descripcion.toLowerCase().includes(q));
+  }, [images, search]);
 
   const lightboxIdx = useMemo(() => lightbox ? filtered.findIndex((i) => i.url === lightbox) : -1, [lightbox, filtered]);
 
@@ -60,19 +46,7 @@ export default function GaleriaPage() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {categorias.map((c) => (
-            <button key={c.id} onClick={() => setCat(c.id)}
-              className={`cursor-pointer rounded-full px-4 py-2 text-xs font-bold tracking-wide transition-all duration-200 ease-out active:scale-95 ${
-                cat === c.id
-                  ? "bg-primary text-white shadow-md"
-                  : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
-              }`}>
-              {c.label}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
         <div className="relative">
           <MagnifyingGlass size={14} weight="bold" className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar..."
@@ -95,7 +69,7 @@ export default function GaleriaPage() {
             {search ? "No hay resultados para esa b&uacute;squeda." : "No hay im&aacute;genes en la Galer&iacute;a"}
           </p>
           {search && (
-            <button onClick={() => { setSearch(""); setCat(ALL); }}
+            <button onClick={() => setSearch("")}
               className="cursor-pointer rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary transition-all hover:bg-primary/20">
               Limpiar filtros
             </button>
