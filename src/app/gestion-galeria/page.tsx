@@ -111,7 +111,8 @@ function UploadInner() {
     if (!ok) return;
     loading(true, "Borrando imagen...");
     try {
-      const ruta = img.url.split("/").pop();
+      const prefix = supabase.storage.from("imagenes").getPublicUrl("").data.publicUrl;
+      const ruta = img.url.replace(prefix, "");
       if (!ruta) throw new Error("URL inválida");
       const { error: delErr } = await supabase.storage.from("imagenes").remove([ruta]);
       if (delErr) throw delErr;
