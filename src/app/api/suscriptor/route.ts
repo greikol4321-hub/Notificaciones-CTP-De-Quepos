@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   if (accion === "baja") {
     const { error } = await supabase
       .from("suscriptores")
-      .update({ activo: false })
+      .delete()
       .eq("telefono", telefono);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
