@@ -198,7 +198,7 @@ export default function HomePage() {
         </div>
 
         <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-[0_4px_16px_-6px_rgba(0,0,0,0.04)]">
-          <table className="w-full text-sm">
+          <table className="hidden w-full text-sm sm:table">
             <thead>
               <tr className="bg-primary text-left text-white/90">
                 <th className="px-4 py-3.5 text-[0.68rem] font-semibold uppercase tracking-wider">Docente</th>
@@ -240,6 +240,49 @@ export default function HomePage() {
               )}
             </tbody>
           </table>
+
+          <div className="flex flex-col gap-3 p-4 sm:hidden">
+            {loading ? (
+              [1, 2, 3].map((i) => (
+                <div key={i} className="h-28 animate-pulse rounded-xl bg-gray-50" />
+              ))
+            ) : ausentesVisibles.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 py-8 text-center">
+                <ClipboardText size={28} className="text-gray-200" />
+                <p className="text-sm font-medium text-gray-400">Todos los docentes están presentes hoy.</p>
+              </div>
+            ) : (
+              ausentesVisibles.map((a) => {
+                const hClass = horarioEstilo(a.horario || "Todo el dia");
+                return (
+                  <div key={a.id} className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="font-poppins text-sm font-bold text-gray-900">{a.nombre}</span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-[0.65rem] font-bold text-red-600">Ausente</span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[0.72rem] text-gray-500">
+                      <span>
+                        <span className="font-semibold text-gray-600">Motivo:</span>{" "}
+                        <span className="inline-block rounded bg-gray-100 px-1.5 py-0.5 font-semibold text-gray-600">{a.razon}</span>
+                      </span>
+                      {a.detalle && (
+                        <span>
+                          <span className="font-semibold text-gray-600">Detalle:</span> {a.detalle}
+                        </span>
+                      )}
+                      <span>
+                        <span className="font-semibold text-gray-600">Horario:</span>{" "}
+                        <span className={`inline-block rounded px-1.5 py-0.5 font-bold ${hClass}`}>{a.horario || "Todo el dia"}</span>
+                      </span>
+                      <span>
+                        <span className="font-semibold text-gray-600">Desde:</span> {formatearFecha(a.fecha)} al {formatearFecha(a.fecha_fin)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
       </motion.section>
     </motion.div>

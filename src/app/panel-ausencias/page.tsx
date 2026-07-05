@@ -436,30 +436,34 @@ function DocentesInner() {
               </table>
             </div>
 
-            <div className="divide-y divide-gray-100 md:hidden">
+            <div className="flex flex-col gap-3 p-3 md:hidden">
               {historialFiltrado.map((a) => {
                 const hEst = horarioEstilos[a.horario || ""] || { bg: "bg-purple-50", color: "text-purple-700" };
                 return (
-                  <div key={a.id} className="space-y-2 p-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold text-gray-800">{a.fecha}{a.fecha_fin ? ` — ${a.fecha_fin}` : ""}</span>
-                      <span className={`rounded-md px-2 py-0.5 text-[0.65rem] font-bold ${hEst.bg} ${hEst.color}`}>
+                  <div key={a.id} className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                    <div className="mb-2.5 flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-700">
+                        <CalendarBlank size={13} weight="bold" className="text-gray-400" />
+                        {a.fecha}{a.fecha_fin ? ` — ${a.fecha_fin}` : ""}
+                      </div>
+                      <span className={`shrink-0 rounded-md px-2 py-0.5 text-[0.6rem] font-bold ${hEst.bg} ${hEst.color}`}>
                         {a.horario || "Todo el dia"}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="mb-1.5 flex items-center gap-1.5">
+                      <Note size={12} weight="bold" className="text-gray-400" />
                       <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[0.65rem] font-semibold text-gray-700">{a.razon}</span>
                     </div>
-                    <p className="text-xs text-gray-500">{a.detalle || "Sin detalle adicional"}</p>
-                    <div className="flex gap-1.5 pt-1">
+                    <p className="mb-3 text-xs leading-relaxed text-gray-500">{a.detalle || "Sin detalle adicional"}</p>
+                    <div className="flex gap-2 border-t border-gray-50 pt-2.5">
                       <button onClick={() => abrirEditar(a)}
-                        className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-blue-50 px-2.5 py-1.5 text-[0.65rem] font-bold text-blue-600 transition-all hover:bg-blue-100 active:scale-[0.95]">
-                        <PencilSimple size={11} weight="bold" />
+                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-2 text-[0.65rem] font-bold text-blue-600 transition-all hover:bg-blue-100 active:scale-[0.95]">
+                        <PencilSimple size={12} weight="bold" />
                         Editar
                       </button>
                       <button onClick={() => eliminar(a.id)}
-                        className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-red-50 px-2.5 py-1.5 text-[0.65rem] font-bold text-red-600 transition-all hover:bg-red-100 active:scale-[0.95]">
-                        <TrashSimple size={11} weight="bold" />
+                        className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-[0.65rem] font-bold text-red-600 transition-all hover:bg-red-100 active:scale-[0.95]">
+                        <TrashSimple size={12} weight="bold" />
                         Eliminar
                       </button>
                     </div>
