@@ -40,13 +40,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No tienes permiso" }, { status: 403 });
   }
 
-  const supabase = createClient(
+  const srv = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  const { data: user, error: createError } = await supabase.auth.admin.createUser({
+  const { data: user, error: createError } = await srv.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
@@ -54,10 +54,10 @@ export async function POST(request: NextRequest) {
 
   if (createError) {
     if (createError.message.includes("already exists")) {
-      const { data: existing } = await supabase.auth.admin.listUsers();
+      const { data: existing } = await srv.auth.admin.listUsers();
       const found = existing?.users.find((u) => u.email === email);
       if (found) {
-        const { error: upsertError } = await supabase.from("usuarios_perfil").upsert({
+        const { error: upsertError } = await srv.from("usuarios_perfil").upsert({
           user_id: found.id,
           nombre_completo: "Administrador",
           usuario: "admin",
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: createError.message }, { status: 500 });
   }
 
-  const { error: profileError } = await supabase.from("usuarios_perfil").insert({
+  const { error: profileError } = await srv.from("usuarios_perfil").insert({
     user_id: user.user.id,
     nombre_completo: "Administrador",
     usuario: "admin",
