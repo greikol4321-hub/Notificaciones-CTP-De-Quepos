@@ -7,8 +7,6 @@ import { ImageSquare, Upload, TrashSimple, X } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 import { NotiProvider, useNoti } from "@/components/NotiToast";
 
-const BUCKET = "imagenes";
-
 interface Imagen {
   url: string;
   descripcion: string;
@@ -63,36 +61,19 @@ function UploadInner() {
     if (!file || !destino) return;
 
     setSending(true);
-    const nombre = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+    const res = await fetch("/api/subir-imagen", { method: "POST", body: fd });
+    const data = await res.json();
+    setSending(false);
 
-    const { error: uploadErr } = await supabase.storage
-      .from(BUCKET)
-      .upload(nombre, file, { upsert: true });
-
-    if (uploadErr) {
-      toast("error", "Error", `Error al subir: ${uploadErr.message}`);
-      setSending(false);
+    if (!res.ok) {
+      toast("error", "Error", data.error || "Error al subir la imagen");
       return;
     }
 
-    const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(nombre);
-
-    const { error: dbErr } = await supabase.from("imagenes").insert({
-      url: pub.publicUrl,
-      destino,
-      descripcion: file.name,
-    });
-
-    if (dbErr) {
-      await supabase.storage.from(BUCKET).remove([nombre]);
-      toast("error", "Error", `Error en BD: ${dbErr.message}`);
-    } else {
-      toast("success", "Imagen publicada", "La imagen se subió correctamente.");
-      e.currentTarget.reset();
-      setPreview(null);
-      cargar();
-    }
-    setSending(false);
+    toast("success", "Imagen publicada", "La imagen se subió correctamente.");
+    e.currentTarget.reset();
+    setPreview(null);
+    cargar();
   }
 
   async function borrar(img: Imagen) {
