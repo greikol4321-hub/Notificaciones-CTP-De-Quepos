@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { User, SignOut, List, X } from "@phosphor-icons/react";
+import { motion, AnimatePresence } from "framer-motion";
+import { User, SignOut, List, X, SignIn } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Header() {
@@ -14,6 +15,7 @@ export default function Header() {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -22,13 +24,18 @@ export default function Header() {
     });
   }, []);
 
-  async function handleLogout() {
+  function handleLogoutClick() {
+    setShowLogoutModal(true);
+    setMenuOpen(false);
+  }
+
+  async function handleLogoutConfirm() {
     setLoggingOut(true);
+    setShowLogoutModal(false);
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
     setLoggingOut(false);
-    setMenuOpen(false);
     router.push("/");
   }
 
@@ -80,7 +87,7 @@ export default function Header() {
                     Volver al Panel
                   </Link>
                 )}
-                <button onClick={handleLogout} disabled={loggingOut}
+                <button onClick={handleLogoutClick} disabled={loggingOut}
                   className="inline-flex min-h-[38px] cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-white/25 bg-white/8 px-3.5 py-2 text-[0.68rem] font-bold text-white/80 no-underline transition-all duration-200 ease-out hover:bg-white/15 hover:text-white">
                   <SignOut size={13} weight="bold" />
                   {loggingOut ? "Saliendo..." : "Salir"}
@@ -107,7 +114,7 @@ export default function Header() {
                   Volver al Panel
                 </Link>
               )}
-              <button onClick={handleLogout} disabled={loggingOut}
+              <button onClick={handleLogoutClick} disabled={loggingOut}
                 className="inline-flex min-h-[38px] cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-white/25 bg-white/8 px-3.5 py-2 text-[0.72rem] font-bold text-white/80 no-underline transition-all duration-200 ease-out hover:bg-white/15 hover:text-white">
                 <SignOut size={13} weight="bold" />
                 {loggingOut ? "Saliendo..." : "Salir"}
@@ -116,6 +123,32 @@ export default function Header() {
           ) : null}
         </div>
       )}
+
+      <AnimatePresence>
+        {showLogoutModal && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm" onClick={() => setShowLogoutModal(false)}>
+            <motion.div initial={{ opacity: 0, scale: 0.92, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, y: 10 }} transition={{ type: "spring", stiffness: 200, damping: 25 }} className="w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)]" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-red-50">
+                  <SignIn size={20} weight="bold" className="text-red-500" />
+                </div>
+                <h2 className="mb-1 text-lg font-extrabold tracking-tight text-primary">Cerrar sesión</h2>
+                <p className="text-sm leading-relaxed text-gray-500">¿Estás seguro de que deseas salir del sistema?</p>
+              </div>
+              <div className="flex gap-2 border-t border-gray-100 px-6 py-4">
+                <button onClick={() => setShowLogoutModal(false)}
+                  className="flex-1 cursor-pointer rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-bold text-gray-600 transition-all hover:bg-gray-50 active:scale-[0.98]">
+                  Cancelar
+                </button>
+                <button onClick={handleLogoutConfirm}
+                  className="flex-1 cursor-pointer rounded-xl bg-red-500 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:bg-red-600 active:scale-[0.98]">
+                  Salir
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

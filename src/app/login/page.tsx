@@ -71,20 +71,20 @@ function LoginForm() {
               alt="CTP de Quepos"
               className="mx-auto mb-4 h-16 w-16 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.06)]"
             />
-            <span className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/12 px-3 py-1 font-poppins text-[0.6rem] font-bold uppercase tracking-widest text-accent">
+            <span className="mb-2 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/12 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-widest text-accent">
               CTP de Quepos
             </span>
-            <h1 className="mt-3 font-poppins text-xl font-extrabold text-primary sm:text-2xl">
+            <h1 className="mt-3  text-xl font-extrabold text-primary sm:text-2xl">
               Acceso Personal
             </h1>
-            <p className="mt-1 font-outfit text-sm text-gray-400">
+            <p className="mt-1 font-sans text-sm text-gray-400">
               Ingresá tu correo y contraseña institucional
             </p>
           </div>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div>
-              <label htmlFor="email" className="mb-1.5 block font-outfit text-[0.78rem] font-semibold text-gray-500">
+              <label htmlFor="email" className="mb-1.5 block font-sans text-[0.78rem] font-semibold text-gray-500">
                 Correo electrónico
               </label>
               <div className="relative">
@@ -97,13 +97,13 @@ function LoginForm() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
-                  className="w-full rounded-xl border border-gray-200 bg-surface py-3.5 pl-10 pr-4 font-outfit text-sm text-gray-800 outline-none transition-all duration-200 ease-out placeholder:text-gray-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/6"
+                  className="w-full rounded-xl border border-gray-200 bg-surface py-3.5 pl-10 pr-4 font-sans text-sm text-gray-800 outline-none transition-all duration-200 ease-out placeholder:text-gray-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/6"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="mb-1.5 block font-outfit text-[0.78rem] font-semibold text-gray-500">
+              <label htmlFor="password" className="mb-1.5 block font-sans text-[0.78rem] font-semibold text-gray-500">
                 Contraseña
               </label>
               <div className="relative">
@@ -116,7 +116,7 @@ function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="w-full rounded-xl border border-gray-200 bg-surface py-3.5 pl-10 pr-10 font-outfit text-sm text-gray-800 outline-none transition-all duration-200 ease-out placeholder:text-gray-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/6"
+                  className="w-full rounded-xl border border-gray-200 bg-surface py-3.5 pl-10 pr-10 font-sans text-sm text-gray-800 outline-none transition-all duration-200 ease-out placeholder:text-gray-300 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/6"
                 />
                 <button
                   type="button"
@@ -134,7 +134,7 @@ function LoginForm() {
               <motion.p
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-lg bg-red-50 px-4 py-2.5 font-outfit text-sm font-semibold text-urgent"
+                className="rounded-lg bg-red-50 px-4 py-2.5 font-sans text-sm font-semibold text-urgent"
               >
                 {error}
               </motion.p>
@@ -143,7 +143,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-primary px-6 font-poppins text-sm font-bold text-white shadow-[0_4px_14px_rgba(15,43,75,0.25)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(15,43,75,0.35)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+              className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-primary px-6  text-sm font-bold text-white shadow-[0_4px_14px_rgba(15,43,75,0.25)] transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(15,43,75,0.35)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
             >
               {loading ? (
                 <span className="loading-spinner inline-block h-4 w-4 rounded-full border-2 border-white/30 border-t-white" />
@@ -155,7 +155,7 @@ function LoginForm() {
           </form>
         </div>
 
-        <p className="mt-5 text-center font-outfit text-[0.72rem] text-gray-400">
+        <p className="mt-5 text-center text-[0.72rem] font-bold text-gray-400">
           Colegio Técnico Profesional de Quepos &mdash; Sistema de Notificaciones
         </p>
       </motion.div>
