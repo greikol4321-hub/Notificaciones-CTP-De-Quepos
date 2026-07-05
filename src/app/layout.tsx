@@ -43,8 +43,13 @@ export default function RootLayout({
         <main className="mx-auto w-full max-w-[1200px] flex-1 px-6 py-8">
           {children}
         </main>
-        <footer className="border-t border-gray-200 bg-white py-6 text-center text-xs text-gray-500">
-          <p>Desarrollado por la Especialidad de Inform&aacute;tica | CTP de Quepos | {new Date().getFullYear()}</p>
+        <footer className="border-t border-gray-200 bg-white px-4 py-8 text-center text-xs text-gray-500 sm:py-6">
+          <p className="mx-auto max-w-[600px] leading-relaxed">
+            Desarrollado por la Especialidad de <strong className="font-extrabold text-primary">Desarrollo Web</strong>
+            <span className="mx-2 hidden sm:inline">|</span>
+            <br className="sm:hidden" />
+            CTP de Quepos &middot; {new Date().getFullYear()}
+          </p>
         </footer>
       </body>
     </html>

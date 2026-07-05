@@ -49,20 +49,18 @@ function ComAdminInner() {
 
   useEffect(() => {
     async function init() {
-      loading(true, "Cargando comunicados...");
       const { data: { user: u } } = await supabase.auth.getUser();
-      if (!u) { loading(false); router.push("/login"); return; }
+      if (!u) { router.push("/login"); return; }
       const { data: perfil } = await supabase.from("usuarios_perfil").select("rol, nombre_completo, usuario").eq("user_id", u.id).single();
       if (!perfil || !["admin", "docente_guia_admin"].includes((perfil as { rol: string }).rol)) {
-        loading(false); router.push("/panel-ausencias"); return;
+        router.push("/panel-ausencias"); return;
       }
       setUser({ id: u.id, name: (perfil as { nombre_completo: string; usuario: string }).nombre_completo || (perfil as { usuario: string }).usuario || u.email || "Admin" });
       const { data } = await supabase.from("comunicados").select("*").order("creado_en", { ascending: false });
       if (data) setComunicados(data as Comunicado[]);
-      loading(false);
     }
     init();
-  }, [router, supabase, loading]);
+  }, [router, supabase]);
 
   const refetch = useCallback(async () => {
     const { data } = await supabase.from("comunicados").select("*").order("creado_en", { ascending: false });
@@ -193,7 +191,7 @@ function ComAdminInner() {
           </div>
           <div>
             <label className="mb-2 flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-wider text-gray-500">Color</label>
-            <div className="flex gap-3 sm:gap-4">
+            <div className="flex justify-center gap-3 sm:justify-start sm:gap-4">
               {colores.map((c) => (
                 <button type="button" key={c.value} onClick={() => setColor(c.value)}
                   className={`relative flex cursor-pointer items-center justify-center transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${color === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
@@ -380,7 +378,7 @@ function ComAdminInner() {
                 </div>
                 <div>
                   <label className="mb-2 flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-wider text-gray-500">Color</label>
-                  <div className="flex gap-3 sm:gap-4">
+                  <div className="flex justify-center gap-3 sm:justify-start sm:gap-4">
                     {colores.map((c) => (
                       <button type="button" key={c.value} onClick={() => setEditColor(c.value)}
                         className={`relative flex cursor-pointer items-center justify-center transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${editColor === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
