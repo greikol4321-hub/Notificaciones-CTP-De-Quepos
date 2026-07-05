@@ -7,7 +7,9 @@ const supabase = createClient(
 );
 
 export async function POST(request: NextRequest) {
-  let { accion, telefono, nombre } = await request.json();
+  const body = await request.json();
+  const { accion, nombre } = body;
+  let { telefono } = body;
 
   if (!telefono) {
     return NextResponse.json({ error: "Teléfono requerido" }, { status: 400 });

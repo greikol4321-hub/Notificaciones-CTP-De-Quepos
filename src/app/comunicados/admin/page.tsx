@@ -118,7 +118,7 @@ function ComAdminInner() {
       toast("error", "Error", msg);
       if (pdfData.pdf_url) eliminarPdf(pdfData.pdf_url).catch(() => {});
     } finally { loading(false); }
-  }, [titulo, contenido, color, pdfFile, user, supabase, toast, loading, refetch, subirPdf, eliminarPdf]);
+  }, [titulo, contenido, color, pdfFile, notificarWA, user, supabase, toast, loading, refetch, subirPdf, eliminarPdf]);
 
   async function handleEditSave() {
     loading(true, "Guardando...");
