@@ -160,9 +160,9 @@ export default function HomePage() {
                 <div className="flex-1 p-5">
                   <h3 className="mb-2 flex items-center gap-2 text-base font-bold" style={{ color: c.color_borde || "#0F2B4B" }}>
                     {c.color_borde === "#e74c3c" && <span className="inline-flex items-center gap-1 rounded bg-red-600 px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider text-white">Urgente</span>}
-                    {c.titulo}
+                    <span className="break-words">{c.titulo}</span>
                   </h3>
-                  <p className="text-sm leading-relaxed text-gray-500">{c.contenido}</p>
+                  <p className="break-words text-sm leading-relaxed text-gray-500">{c.contenido}</p>
                   {c.pdf_url && (
                     <a href={c.pdf_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[0.72rem] font-bold text-amber-700 no-underline transition-colors duration-200 ease-out hover:bg-amber-100">
                       <FilePdf size={14} weight="bold" />

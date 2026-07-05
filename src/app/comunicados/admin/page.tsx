@@ -255,7 +255,7 @@ function ComAdminInner() {
                 filtrados.map((c) => (
                   <tr key={c.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50/80">
                     <td className="px-4 py-3 pl-5 font-semibold whitespace-nowrap text-gray-800">{new Date(c.creado_en).toLocaleDateString("es-CR")}</td>
-                    <td className="px-4 py-3">
+                    <td className="break-words px-4 py-3">
                       <strong style={{ color: c.color_borde }}>{c.titulo}</strong>
                       <div className="mt-1 text-xs text-gray-500">{c.contenido}</div>
                       {c.pdf_url && (
@@ -293,7 +293,7 @@ function ComAdminInner() {
               <div className="py-10 text-center text-sm text-gray-400">No hay comunicados registrados.</div>
             ) : (
               filtrados.map((c) => (
-                <div key={c.id} className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                <div key={c.id} className="break-words rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                   <div className="mb-1.5 flex items-start justify-between gap-2">
                     <strong className="text-sm" style={{ color: c.color_borde }}>{c.titulo}</strong>
                     <span className="shrink-0 text-[0.6rem] font-medium text-gray-400">{new Date(c.creado_en).toLocaleDateString("es-CR")}</span>
