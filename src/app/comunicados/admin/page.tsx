@@ -226,7 +226,7 @@ function ComAdminInner() {
           <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-gray-600">
             <input type="checkbox" checked={notificarWA} onChange={(e) => setNotificarWA(e.target.checked)} className="accent-primary" />
             <Bell size={15} weight="fill" className="text-accent" />
-            Notificar por WhatsApp a suscriptores
+            Notificar por push a suscriptores
           </label>
           <button type="submit"
             className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">

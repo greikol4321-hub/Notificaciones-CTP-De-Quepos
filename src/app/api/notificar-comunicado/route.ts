@@ -34,18 +34,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Título requerido" }, { status: 400 });
   }
 
-  const etiqueta: Record<string, string> = {
-    "#e74c3c": "🔴 Urgente",
-    "#f39c12": "🟠 Importante",
-    "#27ae60": "🟢 Informativo",
-    "#3498db": "🔵 General",
-  };
-  const color = etiqueta[color_borde || ""] || "🟢 Informativo";
+  const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
+  const apiKey = process.env.ONESIGNAL_REST_API_KEY;
 
-  const phone = process.env.CALLMEBOT_PHONE;
-  const apiKey = process.env.CALLMEBOT_APIKEY;
-  if (!phone || !apiKey) {
-    return NextResponse.json({ error: "CallMeBot no configurado" }, { status: 500 });
+  if (!appId || !apiKey) {
+    return NextResponse.json({ error: "OneSignal no configurado" }, { status: 500 });
   }
 
   const supabaseAdmin = createClient(
@@ -55,49 +48,43 @@ export async function POST(request: NextRequest) {
 
   const { data: suscriptores } = await supabaseAdmin
     .from("suscriptores")
-    .select("telefono, nombre")
-    .eq("activo", true);
+    .select("player_id")
+    .eq("activo", true)
+    .not("player_id", "is", null);
 
   if (!suscriptores || suscriptores.length === 0) {
     return NextResponse.json({ ok: true, enviados: 0, total: 0 });
   }
 
-  const mensaje = `📢 NUEVO COMUNICADO
+  const etiqueta: Record<string, string> = {
+    "#e74c3c": "🔴 Urgente",
+    "#f39c12": "🟠 Importante",
+    "#27ae60": "🟢 Informativo",
+    "#3498db": "🔵 General",
+  };
+  const color = etiqueta[color_borde || ""] || "🟢 Informativo";
 
-${color}
-"${titulo}"
+  const res = await fetch("https://onesignal.com/api/v1/notifications", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Key ${apiKey}`,
+    },
+    body: JSON.stringify({
+      app_id: appId,
+      include_player_ids: suscriptores.map((s) => s.player_id),
+      headings: { es: `${color} ${titulo}` },
+      contents: { es: contenido || "Nuevo comunicado institucional" },
+      url: "https://notificaciones-ctp-quepos.vercel.app",
+    }),
+  });
 
-Ingrese al sistema:
-https://notificaciones-ctp-quepos.vercel.app`;
+  const json = await res.json();
 
-  const resultados: { telefono: string; ok: boolean; error?: string }[] = [];
-
-  for (const s of suscriptores) {
-    const tel = /^\d{8}$/.test(s.telefono) ? "+506" + s.telefono : s.telefono;
-    const url = `https://api.callmebot.com/whatsapp.php?phone=${tel}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
-    let ok = false;
-    let err = "";
-    for (let i = 0; i < 2; i++) {
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        if (text.includes("Message queued")) { ok = true; break; }
-        err = text.replace(/<[^>]+>/g, "").trim();
-      } catch (e) {
-        err = String(e);
-      }
-      await new Promise((r) => setTimeout(r, 500));
-    }
-    resultados.push({ telefono: tel, ok, error: err });
-    await new Promise((r) => setTimeout(r, 300));
+  if (!res.ok) {
+    console.error("OneSignal error:", json);
+    return NextResponse.json({ error: json.errors?.join(", ") || "Error al enviar" }, { status: 502 });
   }
 
-  const enviados = resultados.filter((r) => r.ok).length;
-  const fallos = resultados.filter((r) => !r.ok);
-
-  if (fallos.length > 0) {
-    console.error("Fallos WhatsApp:", fallos.map((f) => `${f.telefono}: ${f.error}`).join(" | "));
-  }
-
-  return NextResponse.json({ ok: true, enviados, total: suscriptores.length });
+  return NextResponse.json({ ok: true, enviados: json.recipients || 0, total: suscriptores.length, id: json.id });
 }

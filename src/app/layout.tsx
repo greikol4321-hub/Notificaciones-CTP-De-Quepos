@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins, Outfit } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import OneSignalInit from "@/components/OneSignalInit";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} ${outfit.variable}`}>
       <body className="flex min-h-dvh flex-col bg-surface text-[#1e1e1e] font-sans antialiased">
+        <OneSignalInit />
         <Header />
         <main className="mx-auto w-full max-w-[1200px] flex-1 px-6 py-8">
           {children}
