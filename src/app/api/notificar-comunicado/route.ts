@@ -34,7 +34,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Título requerido" }, { status: 400 });
   }
 
-  const color = color_borde === "#e74c3c" ? "🔴 Urgente" : "🟢 Informativo";
+  const etiqueta: Record<string, string> = {
+    "#e74c3c": "🔴 Urgente",
+    "#f39c12": "🟠 Importante",
+    "#27ae60": "🟢 Informativo",
+    "#3498db": "🔵 General",
+  };
+  const color = etiqueta[color_borde || ""] || "🟢 Informativo";
 
   const phone = process.env.CALLMEBOT_PHONE;
   const apiKey = process.env.CALLMEBOT_APIKEY;
