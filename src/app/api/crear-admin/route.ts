@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 
-  const { data: user, error: createError } = await srv.auth.admin.createUser({
+  const { data: newUser, error: createError } = await srv.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
   }
 
   const { error: profileError } = await srv.from("usuarios_perfil").insert({
-    user_id: user.user.id,
+    user_id: newUser.user.id,
     nombre_completo: "Administrador",
     usuario: "admin",
     rol: "admin",
