@@ -54,17 +54,19 @@ export async function POST(request: NextRequest) {
   }
 
   const mensaje = [
-    "📢 NOTIFICACIÓN DE AUSENCIA",
-    "━".repeat(30),
+    "═".repeat(22),
+    "NOTIFICACIÓN DE AUSENCIA",
+    "═".repeat(22),
     "",
-    `👤 Docente: ${perfil.nombre_completo}`,
-    `📅 Fecha: ${fecha}`,
-    `⏰ Horario: ${horario || "Todo el día"}`,
-    `📋 Razón: ${razon}`,
-    `💬 Detalle: ${detalle || "N/A"}`,
+    `INSTITUCIÓN: CTP de Quepos`,
+    `DOCENTE:     ${perfil.nombre_completo}`,
+    `FECHA:       ${fecha}`,
+    `HORARIO:     ${horario || "Todo el día"}`,
+    `RAZÓN:       ${razon}`,
+    `DETALLE:     ${detalle || "N/A"}`,
     "",
-    "━".repeat(30),
-    "🔹 CTP de Quepos — Sistema de Notificaciones",
+    "─".repeat(22),
+    "Sistema de Notificaciones",
   ].join("\n");
 
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
