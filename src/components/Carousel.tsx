@@ -34,7 +34,7 @@ export default function Carousel({ images }: Props) {
         {images.map((img, i) => (
           <div key={i} className="min-w-0 shrink-0 basis-full">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img.url} alt={img.descripcion} className="h-64 w-full object-cover" />
+            <img src={img.url} alt={img.descripcion} className="h-48 w-full object-contain sm:h-64 md:h-80" />
           </div>
         ))}
       </div>
