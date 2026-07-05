@@ -25,8 +25,8 @@ function UploadInner() {
   const [preview, setPreview] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
 
-  const cargar = useCallback(async () => {
-    loading(true, "Cargando...");
+  const cargar = useCallback(async (silent?: boolean) => {
+    if (!silent) loading(true, "Cargando...");
     const { data } = await supabase
       .from("imagenes")
       .select("url,descripcion,destino")
@@ -76,7 +76,7 @@ function UploadInner() {
     toast("success", "Imagen publicada", "La imagen se subió correctamente.");
     e.currentTarget.reset();
     setPreview(null);
-    cargar().finally(() => loading(false));
+    cargar(true);
   }
 
   async function borrar(img: Imagen) {
@@ -92,7 +92,7 @@ function UploadInner() {
     loading(false);
     if (!res.ok) { toast("error", "Error", data.error); return; }
     toast("success", "Imagen borrada", "La imagen se eliminó correctamente del servidor.");
-    cargar().finally(() => loading(false));
+    cargar(true);
   }
 
   const mostrar = tab === "galeria" ? galeria : carrusel;
