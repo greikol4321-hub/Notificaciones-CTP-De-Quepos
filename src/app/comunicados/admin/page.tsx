@@ -149,7 +149,7 @@ function ComAdminInner() {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="overflow-x-hidden space-y-8">
       <div className="flex items-center gap-3">
         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
           <Megaphone size={18} weight="bold" className="text-primary" />
@@ -256,8 +256,8 @@ function ComAdminInner() {
                   <tr key={c.id} className="border-t border-gray-100 transition-colors hover:bg-gray-50/80">
                     <td className="px-4 py-3 pl-5 font-semibold whitespace-nowrap text-gray-800">{new Date(c.creado_en).toLocaleDateString("es-CR")}</td>
                     <td className="break-words px-4 py-3">
-                      <strong className="break-words" style={{ color: c.color_borde }}>{c.titulo}</strong>
-                      <div className="mt-1 break-words text-xs text-gray-500">{c.contenido}</div>
+                      <strong className="block break-words" style={{ color: c.color_borde }}>{c.titulo}</strong>
+                      <div className="mt-1 break-words text-xs text-gray-500 [word-break:break-word]">{c.contenido}</div>
                       {c.pdf_url && (
                         <a href={c.pdf_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 no-underline transition-colors hover:bg-amber-100">
                           <FilePdf size={13} weight="bold" />
@@ -295,7 +295,7 @@ function ComAdminInner() {
               filtrados.map((c) => (
                 <div key={c.id} className="break-words rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
                   <div className="mb-1.5 flex items-start justify-between gap-2">
-                    <strong className="min-w-0 break-words text-sm" style={{ color: c.color_borde }}>{c.titulo}</strong>
+                    <strong className="block min-w-0 break-words text-sm" style={{ color: c.color_borde }}>{c.titulo}</strong>
                     <span className="shrink-0 text-[0.6rem] font-medium text-gray-400">{new Date(c.creado_en).toLocaleDateString("es-CR")}</span>
                   </div>
                   <p className="mb-2.5 break-words text-xs leading-relaxed text-gray-500">{c.contenido}</p>
