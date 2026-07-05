@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
         }, { onConflict: "user_id" });
 
         if (upsertError) return NextResponse.json({ error: upsertError.message }, { status: 500 });
-        return NextResponse.json({ email, password, mensaje: "Admin ya existía, perfil actualizado." });
+        return NextResponse.json({ email, mensaje: "Admin ya existía, perfil actualizado." });
       }
     }
     return NextResponse.json({ error: createError.message }, { status: 500 });
@@ -80,5 +80,5 @@ export async function POST(request: NextRequest) {
 
   if (profileError) return NextResponse.json({ error: profileError.message }, { status: 500 });
 
-  return NextResponse.json({ email, password, mensaje: "Admin creado exitosamente." });
+  return NextResponse.json({ email, mensaje: "Admin creado exitosamente." });
 }
