@@ -53,14 +53,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Servicio no disponible" }, { status: 500 });
   }
 
-  const mensaje = `*AUSENCIA REGISTRADA*
+  const mensaje = `NOTIFICACIÓN OFICIAL DE AUSENCIA DOCENTE
+CTP DE QUEPOS
 
-  👤 ${perfil.nombre_completo}
-  📅 ${fecha}
-  ⏰ ${horario || "Todo el día"}
-  📋 ${razon}${detalle ? `\n  💬 ${detalle}` : ""}
+Estimada Dirección:
 
-  ─ ${new Date().toLocaleDateString("es-CR", { timeZone: "America/Costa_Rica" })} · CTP de Quepos`;
+Por medio del Sistema Integral de Ausencias, se notifica el reporte del siguiente funcionario:
+
+  Funcionario:  ${perfil.nombre_completo}
+  Fecha:        ${fecha}
+  Horario:      ${horario || "Todo el día"}
+  Motivo:       ${razon}${detalle ? `\n  Detalle:      ${detalle}` : ""}
+
+Se ruega tomar nota para los controles de asistencia y suplencias correspondientes.
+
+─ Sistema Integral de Ausencias - CTP de Quepos`;
 
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
 
