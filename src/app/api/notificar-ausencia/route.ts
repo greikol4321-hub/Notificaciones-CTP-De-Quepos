@@ -71,15 +71,18 @@ export async function POST(request: NextRequest) {
 
   const url = `https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${encodeURIComponent(mensaje)}&apikey=${apiKey}`;
 
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error("CallMeBot error:", await res.text());
-      return NextResponse.json({ error: "Error al enviar notificación" }, { status: 502 });
+  let enviado = false;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) { enviado = true; break; }
+      const text = await res.text();
+      console.error(`CallMeBot error (intento ${i + 1}):`, text);
+    } catch (err) {
+      console.error(`CallMeBot exception (intento ${i + 1}):`, err);
     }
-    return NextResponse.json({ ok: true });
-  } catch (err) {
-    console.error("CallMeBot exception:", err);
-    return NextResponse.json({ error: "Error de conexión" }, { status: 502 });
+    if (i < 2) await new Promise((r) => setTimeout(r, 1000));
   }
+
+  return NextResponse.json({ ok: true, whatsapp: enviado });
 }
