@@ -54,7 +54,7 @@ function ComAdminInner() {
       setUser(u as { id: string; email?: string });
       const { data: perfil } = await supabase.from("usuarios_perfil").select("rol").eq("user_id", u.id).single();
       if (!perfil || !["admin", "docente_guia_admin"].includes((perfil as { rol: string }).rol)) {
-        router.push("/docentes");
+        router.push("/panel-ausencias");
         return;
       }
       const { data } = await supabase.from("comunicados").select("*").order("creado_en", { ascending: false });

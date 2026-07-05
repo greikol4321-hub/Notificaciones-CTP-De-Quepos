@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
-const authOnlyPaths = ["/docentes"];
+const authOnlyPaths = ["/panel-ausencias"];
 const adminPaths = ["/comunicados/admin", "/subir-imagen"];
 
 export async function middleware(request: NextRequest) {
@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
     const rolesAdmin = ["admin", "docente_guia_admin"];
     if (!perfil || !rolesAdmin.includes(perfil.rol)) {
       const url = request.nextUrl.clone();
-      url.pathname = "/docentes";
+      url.pathname = "/panel-ausencias";
       return NextResponse.redirect(url);
     }
   }

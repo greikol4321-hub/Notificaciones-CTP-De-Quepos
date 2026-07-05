@@ -47,7 +47,7 @@ function UploadInner() {
         .single()
         .then(({ data: perfil }) => {
           if (!perfil || !["admin", "docente_guia_admin"].includes((perfil as { rol: string }).rol)) {
-            router.push("/docentes");
+            router.push("/panel-ausencias");
             return;
           }
           cargar();

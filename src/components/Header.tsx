@@ -9,7 +9,8 @@ import { createClient } from "@/lib/supabase/client";
 export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
-  const inPanel = pathname.startsWith("/docentes");
+  const inPanel = pathname.startsWith("/panel-ausencias");
+  const inLogin = pathname === "/login";
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -65,15 +66,15 @@ export default function Header() {
           </button>
 
           <div className="hidden items-center gap-2 sm:flex">
-            {!user ? (
+            {!user && !inLogin ? (
               <Link href="/login"
                 className="inline-flex min-h-[38px] cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-[0.72rem] font-bold uppercase tracking-[0.4px] text-primary no-underline transition-all duration-200 ease-out hover:bg-[#f0c200] hover:text-primary hover:shadow-[0_4px_12px_rgba(232,180,0,0.3)]">
                 Acceso Personal
               </Link>
-            ) : (
+            ) : user ? (
               <>
                 {!inPanel && (
-                  <Link href="/docentes"
+                  <Link href="/panel-ausencias"
                     className="inline-flex min-h-[38px] cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-[0.72rem] font-bold uppercase tracking-[0.4px] text-primary no-underline transition-all duration-200 ease-out hover:bg-[#f0c200] hover:shadow-[0_4px_12px_rgba(232,180,0,0.3)]">
                     <User size={14} weight="bold" />
                     Volver al Panel
@@ -85,7 +86,7 @@ export default function Header() {
                   {loggingOut ? "Saliendo..." : "Salir"}
                 </button>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -99,15 +100,15 @@ export default function Header() {
             <br />
             <strong className="font-bold text-white">Colegio Técnico Profesional de Quepos</strong>
           </div>
-          {!user ? (
+          {!user && !inLogin ? (
             <Link href="/login" onClick={() => setMenuOpen(false)}
               className="inline-flex min-h-[38px] cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-[0.72rem] font-bold uppercase tracking-[0.4px] text-primary no-underline transition-all duration-200 ease-out hover:bg-[#f0c200]">
               Acceso Personal
             </Link>
-          ) : (
+          ) : user ? (
             <div className="flex flex-col gap-2">
               {!inPanel && (
-                <Link href="/docentes" onClick={() => setMenuOpen(false)}
+                <Link href="/panel-ausencias" onClick={() => setMenuOpen(false)}
                   className="inline-flex min-h-[38px] cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-[0.72rem] font-bold uppercase tracking-[0.4px] text-primary no-underline transition-all duration-200 ease-out hover:bg-[#f0c200]">
                   <User size={14} weight="bold" />
                   Volver al Panel
@@ -119,7 +120,7 @@ export default function Header() {
                 {loggingOut ? "Saliendo..." : "Salir"}
               </button>
             </div>
-          )}
+          ) : null}
         </div>
       )}
     </header>
