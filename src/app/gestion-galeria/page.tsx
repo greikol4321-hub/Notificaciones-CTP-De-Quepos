@@ -92,7 +92,7 @@ function UploadInner() {
         await supabase.storage.from("imagenes").remove([ruta]).catch(() => {});
         throw dbErr;
       }
-      toast("success", "Imagen publicada", "La imagen se subió correctamente.");
+      toast("success", "Imagen publicada", "Actualizá la página para verla.");
       form?.reset();
       setPreview(null);
       const nueva: Imagen = { url: pub.publicUrl, destino, descripcion: file.name };
