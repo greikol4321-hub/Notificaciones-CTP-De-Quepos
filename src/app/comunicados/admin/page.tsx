@@ -191,13 +191,19 @@ function ComAdminInner() {
             </label>
           </div>
           <div>
-            <label className="mb-1.5 flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-wider text-gray-500">Color</label>
-            <div className="flex gap-2">
+            <label className="mb-2 flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-wider text-gray-500">Color</label>
+            <div className="flex gap-3 sm:gap-4">
               {colores.map((c) => (
                 <button type="button" key={c.value} onClick={() => setColor(c.value)}
-                  className={`flex flex-1 cursor-pointer flex-col items-center gap-1.5 rounded-lg border-2 px-3 py-2.5 text-xs font-bold transition-all ${color === c.value ? "border-gray-800 bg-gray-50 shadow-sm" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`}>
-                  <span className="h-5 w-5 rounded-full" style={{ backgroundColor: c.value }} />
-                  {c.label.split(" ")[0]}
+                  className={`relative flex cursor-pointer items-center justify-center transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${color === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
+                  <span className="block h-9 w-9 rounded-full border-2 border-white/60 shadow-inner sm:h-10 sm:w-10" style={{ backgroundColor: c.value }} />
+                  {color === c.value && (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <svg viewBox="0 0 24 24" className="h-4 w-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
@@ -223,8 +229,8 @@ function ComAdminInner() {
             className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-9 pr-3.5 text-sm shadow-sm outline-none transition-all focus:border-primary/30 focus:ring-3 focus:ring-primary/8" />
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
-          <table className="w-full text-sm">
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+          <table className="hidden w-full text-sm sm:table">
             <thead>
               <tr className="bg-primary text-left text-[0.68rem] font-bold uppercase tracking-wider text-white/90">
                 <th className="px-4 py-3.5 pl-5">
@@ -280,9 +286,50 @@ function ComAdminInner() {
               )}
             </tbody>
           </table>
+
+          <div className="flex flex-col gap-3 p-3 sm:hidden">
+            {filtrados.length === 0 ? (
+              <div className="py-10 text-center text-sm text-gray-400">No hay comunicados registrados.</div>
+            ) : (
+              filtrados.map((c) => (
+                <div key={c.id} className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+                  <div className="mb-1.5 flex items-start justify-between gap-2">
+                    <strong className="text-sm" style={{ color: c.color_borde }}>{c.titulo}</strong>
+                    <span className="shrink-0 text-[0.6rem] font-medium text-gray-400">{new Date(c.creado_en).toLocaleDateString("es-CR")}</span>
+                  </div>
+                  <p className="mb-2.5 text-xs leading-relaxed text-gray-500">{c.contenido}</p>
+                  {c.pdf_url && (
+                    <a href={c.pdf_url} target="_blank" rel="noopener noreferrer" className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[0.65rem] font-bold text-amber-700 no-underline transition-colors hover:bg-amber-100">
+                      <FilePdf size={12} weight="bold" />
+                      {c.pdf_nombre || "Documento"}
+                    </a>
+                  )}
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 border-t border-gray-50 pt-2.5 text-[0.65rem] text-gray-400">
+                    <span className="flex min-w-0 items-center gap-1">
+                      <User size={11} weight="bold" className="shrink-0" />
+                      <span className="truncate">{c.autor}</span>
+                    </span>
+                    <div className="flex shrink-0 gap-1">
+                      <button onClick={() => {
+                        setEditId(c.id); setEditTitulo(c.titulo); setEditContenido(c.contenido || "");
+                        setEditColor(c.color_borde || "#3498db"); setEditPdfUrl(c.pdf_url || "");
+                        setEditPdfNombre(c.pdf_nombre || ""); setEditPdfFile(null); setEditQuitarPdf(false);
+                      }} className="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1.5 text-[0.65rem] font-bold text-blue-600 transition-all hover:bg-blue-100">
+                        <PencilSimple size={11} weight="bold" />
+                        Editar
+                      </button>
+                      <button onClick={() => handleDelete(c.id, c.pdf_url || "")} className="inline-flex cursor-pointer items-center gap-1 rounded-lg bg-red-50 px-2.5 py-1.5 text-[0.65rem] font-bold text-red-600 transition-all hover:bg-red-100">
+                        <TrashSimple size={11} weight="bold" />
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
-
 
       <AnimatePresence>
         {editId && (
@@ -331,13 +378,19 @@ function ComAdminInner() {
                     className="w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-primary/30 focus:ring-3 focus:ring-primary/8" />
                 </div>
                 <div>
-                  <label className="mb-1.5 flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-wider text-gray-500">Color</label>
-                  <div className="flex gap-2">
+                  <label className="mb-2 flex items-center gap-1.5 text-[0.7rem] font-bold uppercase tracking-wider text-gray-500">Color</label>
+                  <div className="flex gap-3 sm:gap-4">
                     {colores.map((c) => (
                       <button type="button" key={c.value} onClick={() => setEditColor(c.value)}
-                        className={`flex flex-1 cursor-pointer flex-col items-center gap-1.5 rounded-lg border-2 px-3 py-2.5 text-xs font-bold transition-all ${editColor === c.value ? "border-gray-800 bg-gray-50 shadow-sm" : "border-transparent bg-gray-50/50 hover:bg-gray-100"}`}>
-                        <span className="h-5 w-5 rounded-full" style={{ backgroundColor: c.value }} />
-                        {c.label.split(" ")[0]}
+                        className={`relative flex cursor-pointer items-center justify-center transition-all duration-200 ease-out hover:-translate-y-0.5 active:scale-90 ${editColor === c.value ? "drop-shadow-[0_4px_8px_rgba(0,0,0,0.2)]" : "drop-shadow-[0_2px_4px_rgba(0,0,0,0.08)]"}`}>
+                        <span className="block h-9 w-9 rounded-full border-2 border-white/60 shadow-inner sm:h-10 sm:w-10" style={{ backgroundColor: c.value }} />
+                        {editColor === c.value && (
+                          <span className="absolute inset-0 flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" className="h-4 w-4 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
