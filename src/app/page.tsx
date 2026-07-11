@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Megaphone, ClipboardText, User, Calendar, FilePdf } from "@phosphor-icons/react";
 import { createClient } from "@/lib/supabase/client";
@@ -30,11 +30,15 @@ export default function HomePage() {
 
   useEffect(() => {
     const supabase = createClient();
+    const hoy = new Date().toLocaleDateString("en-CA", { timeZone: "America/Costa_Rica" });
+    const manana = new Date(`${hoy}T00:00:00-06:00`);
+    manana.setDate(manana.getDate() + 1);
 
     Promise.all([
       supabase.from("imagenes").select("url,descripcion").eq("destino", "carrusel").order("id", { ascending: true }),
       supabase.from("comunicados").select("*").order("creado_en", { ascending: false }).limit(6),
-    ]).then(([car, com]) => {
+      supabase.from("ausencias").select("*").lte("fecha", manana.toLocaleDateString("en-CA", { timeZone: "America/Costa_Rica" })).gte("fecha_fin", hoy),
+    ]).then(([car, com, aus]) => {
       if (car.data) setCarousel(car.data);
       if (com.data) {
         const arr = [...com.data] as Comunicado[];
@@ -45,29 +49,24 @@ export default function HomePage() {
         });
         setComunicados(arr);
       }
+      if (aus.data) setAusencias(aus.data as Ausencia[]);
       setLoading(false);
-    });
-
-    const hoy = new Date().toLocaleDateString("en-CA", { timeZone: "America/Costa_Rica" });
-    const manana = new Date(`${hoy}T00:00:00-06:00`);
-    manana.setDate(manana.getDate() + 1);
-
-    supabase.from("ausencias").select("*").lte("fecha", manana.toLocaleDateString("en-CA", { timeZone: "America/Costa_Rica" })).gte("fecha_fin", hoy).then(({ data }) => {
-      if (data) setAusencias(data as Ausencia[]);
     });
   }, []);
 
-  const ahoraCR = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Costa_Rica" }));
-  const hoyCR = ahoraCR.toLocaleDateString("en-CA");
-  const crH = ahoraCR.getHours() * 60 + ahoraCR.getMinutes();
-  const ausentesVisibles = ausencias.filter((a) => {
-    const activoHoy = a.fecha <= hoyCR && (a.fecha_fin ?? a.fecha) >= hoyCR;
-    if (activoHoy) {
-      if (a.horario === "Mañana" && crH >= 720) return false;
-      if (a.horario === "Tarde" && crH >= 990) return false;
-    }
-    return activoHoy;
-  });
+  const ausentesVisibles = useMemo(() => {
+    const ahoraCR = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Costa_Rica" }));
+    const hoyCR = ahoraCR.toLocaleDateString("en-CA");
+    const crH = ahoraCR.getHours() * 60 + ahoraCR.getMinutes();
+    return ausencias.filter((a) => {
+      const activoHoy = a.fecha <= hoyCR && (a.fecha_fin ?? a.fecha) >= hoyCR;
+      if (activoHoy) {
+        if (a.horario === "Mañana" && crH >= 720) return false;
+        if (a.horario === "Tarde" && crH >= 990) return false;
+      }
+      return activoHoy;
+    });
+  }, [ausencias]);
 
   function formatearFecha(iso?: string) {
     if (!iso) return "N/A";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -85,17 +85,19 @@ function DocentesInner() {
   }, [supabase]);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user: u } }) => {
+    supabase.auth.getUser().then(async ({ data: { user: u } }) => {
       if (!u) { router.push("/login"); return; }
       setUser(u as { id: string });
-      supabase.from("usuarios_perfil").select("nombre_completo, usuario, rol").eq("user_id", u.id).single().then(({ data: p, error }) => {
-        setLoadingAuth(false);
-        if (error || !p) { router.push("/login"); return; }
-        setPerfil(p as Perfil);
-        cargarHistorial(u.id);
-      });
+      const [{ data: p, error }, historialResult] = await Promise.all([
+        supabase.from("usuarios_perfil").select("nombre_completo, usuario, rol").eq("user_id", u.id).single(),
+        supabase.from("ausencias").select("*").eq("user_id", u.id).order("fecha", { ascending: false }),
+      ]);
+      setLoadingAuth(false);
+      if (error || !p) { router.push("/login"); return; }
+      setPerfil(p as Perfil);
+      if (historialResult.data) setHistorial(historialResult.data as Ausencia[]);
     });
-  }, [router, supabase, cargarHistorial]);
+  }, [router, supabase]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,10 +156,10 @@ function DocentesInner() {
     if (user) cargarHistorial(user.id);
   }
 
-  const historialFiltrado = historial.filter((a) => {
+  const historialFiltrado = useMemo(() => {
     const f = busqueda.toUpperCase();
-    return a.razon?.toUpperCase().includes(f) || a.detalle?.toUpperCase().includes(f) || a.fecha?.includes(f);
-  });
+    return historial.filter((a) => a.razon?.toUpperCase().includes(f) || a.detalle?.toUpperCase().includes(f) || a.fecha?.includes(f));
+  }, [historial, busqueda]);
 
   const esAdmin = perfil?.rol === "admin" || perfil?.rol === "docente_guia_admin";
 

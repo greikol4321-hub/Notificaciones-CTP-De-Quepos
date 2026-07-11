@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -52,12 +52,14 @@ function ComAdminInner() {
     async function init() {
       const { data: { user: u } } = await supabase.auth.getUser();
       if (!u) { router.push("/login"); return; }
-      const { data: perfil } = await supabase.from("usuarios_perfil").select("rol, nombre_completo, usuario").eq("user_id", u.id).single();
+      const [{ data: perfil }, { data }] = await Promise.all([
+        supabase.from("usuarios_perfil").select("rol, nombre_completo, usuario").eq("user_id", u.id).single(),
+        supabase.from("comunicados").select("*").order("creado_en", { ascending: false }),
+      ]);
       if (!perfil || !["admin", "docente_guia_admin"].includes((perfil as { rol: string }).rol)) {
         router.push("/panel-ausencias"); return;
       }
       setUser({ id: u.id, name: (perfil as { nombre_completo: string; usuario: string }).nombre_completo || (perfil as { usuario: string }).usuario || u.email || "Admin" });
-      const { data } = await supabase.from("comunicados").select("*").order("creado_en", { ascending: false });
       if (data) setComunicados(data as Comunicado[]);
     }
     init();
@@ -156,10 +158,10 @@ function ComAdminInner() {
     refetch();
   }
 
-  const filtrados = comunicados.filter((c) => {
+  const filtrados = useMemo(() => {
     const f = busqueda.toUpperCase();
-    return c.titulo?.toUpperCase().includes(f) || c.contenido?.toUpperCase().includes(f);
-  });
+    return comunicados.filter((c) => c.titulo?.toUpperCase().includes(f) || c.contenido?.toUpperCase().includes(f));
+  }, [comunicados, busqueda]);
 
   return (
     <div className="overflow-x-hidden space-y-8">

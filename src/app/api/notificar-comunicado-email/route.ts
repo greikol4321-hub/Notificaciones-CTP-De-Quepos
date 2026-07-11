@@ -70,21 +70,25 @@ export async function POST(request: NextRequest) {
   const etiqueta = ETIQUETA[color_borde || ""] || "🟢 Informativo";
   let enviados = 0;
 
-  for (const suscriptor of suscriptores) {
-    try {
-      await send(serviceId, templateId, {
-        to_email: suscriptor.email,
-        titulo,
-        contenido: contenido || "Nuevo comunicado institucional",
-        etiqueta,
-        color: color_borde || "#27ae60",
-        link: "https://notificaciones-ctp-quepos.vercel.app",
-      });
-      enviados++;
-    } catch (err) {
-      console.error(`EmailJS error sending to ${suscriptor.email}:`, err);
+  const batchSize = 50;
+  for (let i = 0; i < suscriptores.length; i += batchSize) {
+    const batch = suscriptores.slice(i, i + batchSize);
+    const results = await Promise.allSettled(
+      batch.map((suscriptor) =>
+        send(serviceId, templateId, {
+          to_email: suscriptor.email,
+          titulo,
+          contenido: contenido || "Nuevo comunicado institucional",
+          etiqueta,
+          color: color_borde || "#27ae60",
+          link: "https://notificaciones-ctp-quepos.vercel.app",
+        })
+      )
+    );
+    enviados += results.filter((r) => r.status === "fulfilled").length;
+    if (i + batchSize < suscriptores.length) {
+      await new Promise((r) => setTimeout(r, 1000));
     }
-    await new Promise((r) => setTimeout(r, 300));
   }
 
   return NextResponse.json({ ok: true, enviados, total: suscriptores.length });
